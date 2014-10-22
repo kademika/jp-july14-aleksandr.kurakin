@@ -25,17 +25,18 @@ public class Shop {
 		strg.insertBird(bird);
 	}
 
-	public void makePurchase(String customerName, Name birdName, int number) {
+	public void makePurchase(String customerName, Name birdName, int number) {  // добавить проверку на остаток птиц на складе!!!
 		
 		Purchase prchs = new Purchase (customerName,birdName, number);
 		for (int i = 0; i < number; i++){
 			prchs.addBirdToPurchase(strg.getBird(birdName));
 		}
 		strg.insertPurchase(prchs);
-	}
+        System.out.println(customerName + " bout " + number + " " + birdName + "s.");
+    }
 	// methods to get reports
 	public void getPriceList(){		//show price list
-		System.out.println("Pricelist: ");
+		System.out.println("Price list: ");
 		for(int i = 0; i < Name.values().length; i++){
 			if (strg.birdInStorage(Name.values()[i], 0) == null){
 				System.out.println(Name.values()[i] + "temporary not available now, sorry");
@@ -106,11 +107,11 @@ public class Shop {
 	}
 	
 	// Catalog with categories
-	public String[]  getCatalog (){
+	public Name[]  getCatalog (){
         int catalogLength = Name.values().length;
-        String[] catalog = new String [catalogLength];
+        Name[] catalog = new Name [catalogLength];
         for (int i = 0; i<Name.values().length; i++){
-        catalog[i] = Name.values()[i].toString();
+        catalog[i] = Name.values()[i];
         }
 
         return catalog;

@@ -56,13 +56,13 @@ public class Launcher {
         shop.insertBird(new Bird(Name.PARROT, 12.3));
         shop.insertBird(new Bird(Name.OWL, 15.7));
 
-        shop.makePurchase("Aleksandr", Name.CHICKEN, 2);
-        shop.makePurchase("Aleksandr", Name.CANARY, 1);
-        shop.makePurchase("Anna", Name.EAGLE, 1);
-        shop.makePurchase("Oleg", Name.OWL, 2);
-        shop.makePurchase("Anna", Name.DUCK, 1);
-        shop.makePurchase("Anna", Name.PARROT, 2);
-        shop.makePurchase("Anna", Name.CANARY, 1);
+//        shop.makePurchase("Aleksandr", Name.CHICKEN, 2);
+//        shop.makePurchase("Aleksandr", Name.CANARY, 1);
+//        shop.makePurchase("Anna", Name.EAGLE, 1);
+//        shop.makePurchase("Oleg", Name.OWL, 2);
+//        shop.makePurchase("Anna", Name.DUCK, 1);
+//        shop.makePurchase("Anna", Name.PARROT, 2);
+//        shop.makePurchase("Anna", Name.CANARY, 1);
     }
 
 }
