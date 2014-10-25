@@ -17,8 +17,6 @@ public class Shop {
 	public Shop() {
 		strg = new Storages();
 
-
-
 	}
 	
 	public void insertBird (Bird bird){
@@ -26,13 +24,16 @@ public class Shop {
 	}
 
 	public void makePurchase(String customerName, Name birdName, int number) {  // добавить проверку на остаток птиц на складе!!!
-		
+
+//        if(!)
 		Purchase prchs = new Purchase (customerName,birdName, number);
 		for (int i = 0; i < number; i++){
 			prchs.addBirdToPurchase(strg.getBird(birdName));
 		}
 		strg.insertPurchase(prchs);
         System.out.println(customerName + " bout " + number + " " + birdName + "s.");
+
+
     }
 	// methods to get reports
 	public void getPriceList(){		//show price list
@@ -59,52 +60,52 @@ public class Shop {
 		}
 	}
 	
-	public void getLast7daysTransactions(){		//printing 
-		int today = 0;
-		int oneDayAgo = 0;
-		int twoDaysAgo = 0;
-		int threeDaysAgo = 0;
-		int fourDaysAgo = 0;
-		int fiveDaysAgo = 0;
-		int sixDaysAgo = 0;
-		for (int i = 0; i < 1000; i++){
-			if (strg.purchaseInStorage(i) == null){
-				break;
-			} else {
-				switch (strg.purchaseInStorage(i).getPurchaseTime()){
-				case 0: today +=strg.purchaseInStorage(i).getNumberOfBirds(); // or we should make "+1" ??
-				case 1: oneDayAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
-				case 2: twoDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
-				case 3: threeDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
-				case 4: fourDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
-				case 5: fiveDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
-				case 6: sixDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
-				}
-			}
-		}
-		System.out.println("Last seven days, from today: " 
-		+ today +", "+ oneDayAgo +", "+ twoDaysAgo +", "+ threeDaysAgo +", "+ fourDaysAgo +", "+ fiveDaysAgo +", "+ sixDaysAgo);
-	}
+//	public void getLast7daysTransactions(){		//printing
+//		int today = 0;
+//		int oneDayAgo = 0;
+//		int twoDaysAgo = 0;
+//		int threeDaysAgo = 0;
+//		int fourDaysAgo = 0;
+//		int fiveDaysAgo = 0;
+//		int sixDaysAgo = 0;
+//		for (int i = 0; i < 1000; i++){
+//			if (strg.purchaseInStorage(i) == null){
+//				break;
+//			} else {
+//				switch (strg.purchaseInStorage(i).getPurchaseTime()){
+//				case 0: today +=strg.purchaseInStorage(i).getNumberOfBirds(); // or we should make "+1" ??
+//				case 1: oneDayAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
+//				case 2: twoDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
+//				case 3: threeDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
+//				case 4: fourDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
+//				case 5: fiveDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
+//				case 6: sixDaysAgo +=strg.purchaseInStorage(i).getNumberOfBirds();
+//				}
+//			}
+//		}
+//		System.out.println("Last seven days, from today: "
+//		+ today +", "+ oneDayAgo +", "+ twoDaysAgo +", "+ threeDaysAgo +", "+ fourDaysAgo +", "+ fiveDaysAgo +", "+ sixDaysAgo);
+//	}
 	
 	// transactions today
-	public void getTodayTransactions(){
-		System.out.println("№   Customer    Bird   Price   Amount");
-		System.out.println("_____________________________________");
-		int n = 1;
-		double priceTotal = 0;
-		int amountTotal = 0;
-		for (int i=0; i<1000; i++){
-			if (strg.purchaseInStorage(i) != null && strg.purchaseInStorage(i).getPurchaseTime() == 0){
-				System.out.println(n + ", "+ strg.purchaseInStorage(i).getCustomer() + ", " +
-						strg.purchaseInStorage(i).getPrchs()[0].getName() + ", " + 
-						strg.purchaseInStorage(i).getPrchs()[0].getPrice() + ", "+ strg.purchaseInStorage(i).getNumberOfBirds());
-				n +=1;
-				priceTotal += strg.purchaseInStorage(i).getPrchs()[0].getPrice();
-				amountTotal += strg.purchaseInStorage(i).getNumberOfBirds();
-			}
-		}
-		System.out.println("Totaly: "+ n + " purchases  "+ priceTotal + "  " + amountTotal);
-	}
+//	public void getTodayTransactions(){
+//		System.out.println("№   Customer    Bird   Price   Amount");
+//		System.out.println("_____________________________________");
+//		int n = 1;
+//		double priceTotal = 0;
+//		int amountTotal = 0;
+//		for (int i=0; i<1000; i++){
+//			if (strg.purchaseInStorage(i) != null && strg.purchaseInStorage(i).getPurchaseTime() == 0){
+//				System.out.println(n + ", "+ strg.purchaseInStorage(i).getCustomer() + ", " +
+//						strg.purchaseInStorage(i).getPrchs()[0].getName() + ", " +
+//						strg.purchaseInStorage(i).getPrchs()[0].getPrice() + ", "+ strg.purchaseInStorage(i).getNumberOfBirds());
+//				n +=1;
+//				priceTotal += strg.purchaseInStorage(i).getPrchs()[0].getPrice();
+//				amountTotal += strg.purchaseInStorage(i).getNumberOfBirds();
+//			}
+//		}
+//		System.out.println("Totaly: "+ n + " purchases  "+ priceTotal + "  " + amountTotal);
+//	}
 	
 	// Catalog with categories
 	public Name[]  getCatalog (){
