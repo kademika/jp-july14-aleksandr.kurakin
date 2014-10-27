@@ -1,5 +1,7 @@
 package com.kademika.shop;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.kademika.shop.constants.Name;
@@ -8,24 +10,18 @@ public class Purchase {
 	private int numberOfBirds;
 	private String customerName;
 	private int purchaseTime;
-	Bird[] prchs;
+	List <Bird> prchs = new ArrayList();
 
 	public Purchase(String customerName, Name name, int number) {
 		this.customerName = customerName;
 		Random r = new Random();
 		this.purchaseTime = r.nextInt(6);
-		prchs = new Bird[number];
+//		prchs = new Bird[number];
 		this.numberOfBirds = number;
 	}
 
 	public void addBirdToPurchase(Bird bird) {
-
-		for (int i = 0; i < numberOfBirds; i++) {
-			if (prchs[i] == null) {
-				prchs[i] = bird;
-				break;
-			}
-		}
+        prchs.add(bird);
 	}
 
 	public String getCustomer() {
@@ -36,7 +32,7 @@ public class Purchase {
 		return purchaseTime;
 	}
 
-	public Bird[] getPrchs() {
+	public List getPrchs() {
 		return prchs;
 	}
 	

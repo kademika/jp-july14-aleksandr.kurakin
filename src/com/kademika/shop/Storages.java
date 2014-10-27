@@ -12,10 +12,11 @@ public class Storages {
     private PurchaseStorage prchsStrg;
 
     class PurchaseStorage<T extends Purchase> {
-        private List<T> items;
+        private  List<T> items  = new ArrayList<>();;
+
 
         public void PurchaseStorage() {
-            items = new ArrayList<>();
+
         }
 
 //        public <T> T getPurchase(int index) {

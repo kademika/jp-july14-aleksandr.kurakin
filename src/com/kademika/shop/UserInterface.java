@@ -62,8 +62,8 @@ public class UserInterface  {
                 c.setName(tName.getText());
 
                 int qnt = Integer.parseInt(tlQuantity.getText());
-                Name bird = (Name) patternList.getSelectedItem();
-                shop.makePurchase(c.getName(), bird, qnt);
+                Name birdName = (Name) patternList.getSelectedItem();
+                shop.makePurchase(c.getName(), birdName, qnt);
             }
         });
 
