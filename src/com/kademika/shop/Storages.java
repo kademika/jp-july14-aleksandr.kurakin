@@ -1,6 +1,7 @@
 package com.kademika.shop;
 
 import com.kademika.shop.constants.Name;
+import com.kademika.shop.Bird;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,78 +9,102 @@ import java.util.List;
 // Storages hranit infomatciu o tovarah, pokupatel'ah i pokupkah
 public class Storages {
 
-    Bird[][] brdStrg;
+    private CustomerStorage customerStorage;
     private PurchaseStorage prchsStrg;
+    private BirdStorage birdStorage;
 
-    class PurchaseStorage<T extends Purchase> {
-        private  List<T> items  = new ArrayList<>();;
+    class PurchaseStorage<T extends Purchase> extends SimpleStorage {
 
-
-        public void PurchaseStorage() {
-
-        }
-
-//        public <T> T getPurchase(int index) {
-//            return (T) items.get(index);
-//        }
-
-        public void add(T item) {       //adding a purchase
-            items.add(item);
-        }
-
-        public List<T> getPurchases() {  //list of all purchases
-            return new ArrayList<T>(items);
-        }
     }
 
-    public Storages() {
-        brdStrg = new Bird[Name.values().length][100];
+    class CustomerStorage<T extends Customer> extends SimpleStorage {
 
-        prchsStrg = new PurchaseStorage();
     }
 
-
-    // vynimanie pticy iz hranilischa
-    public Bird getBird(Name name) {
+    class BirdStorage<T extends Bird> extends SimpleStorage {
         Bird brd = null;
-        if (brdStrg[name.getId()][0] == null) {
-            System.out.println("Sorry, we have no this birds anymore =(");// insert Exception here,
-        }
-        for (int i = 0; i < 100; i++) {
-            if (brdStrg[name.getId()][i] == null) {
-                brd = brdStrg[name.getId()][i - 1];
-                brdStrg[name.getId()][i - 1] = null;
-                break;
+
+        public Bird getBird(Name name) {
+
+//            if (items.contains() == null) {
+//                System.out.println("Sorry, we have no this birds anymore =(");// insert Exception here,
+//            }
+
+            for (int i = 0; i < items.size(); i++) {
+                brd = (Bird) items.get(i);
+                if (brd.getName().equals(name)) {
+                    items.remove(i);
+                    break;
+                    }
+                }
+            return brd;
             }
         }
-        return brd;
-    }
 
-    //rabotaem s pokupatelem, zdes' est vozmognost' tol'ko dobavleniya
-    public void insertPurchase(Purchase prchs) {
-        prchsStrg.add(prchs);
-    }
-
-    public List<Purchase> purchaseInStorage() {
-
-        return prchsStrg.getPurchases();
-    }
+        public Storages() {
+            birdStorage = new BirdStorage();
+            customerStorage = new CustomerStorage();
+            prchsStrg = new PurchaseStorage();
+        }
 
 
-    public Bird birdInStorage(Name name, int number) {
-        final Bird brd = brdStrg[name.getId()][number]; // is it correct?
-        return brd;
-    }
+        // vynimanie pticy iz hranilischa
+        public Bird getBird(Name name) {
 
-    // rabotaem s pticami (tovar)
-    // dibavlenie novoi pticy v hranilische
-    public void insertBird(Bird bird) {
-        for (int i = 0; i < 100; i++) {
-            if (brdStrg[bird.getName().getId()][i] == null) {
-                brdStrg[bird.getName().getId()][i] = bird;
-                break;
+//        Bird brd = null;
+//        if (brdStrg[name.getId()][0] == null) {
+//            System.out.println("Sorry, we have no this birds anymore =(");// insert Exception here,
+//        }
+//        for (int i = 0; i < 100; i++) {
+//            if (brdStrg[name.getId()][i] == null) {
+//                brd = brdStrg[name.getId()][i - 1];
+//                brdStrg[name.getId()][i - 1] = null;
+//                break;
+//            }
+//        }
+            return birdStorage.getBird(name);
+        }
+
+        //rabotaem s pokupatelem, zdes' est vozmognost' tol'ko dobavleniya
+        public void insertPurchase(Purchase prchs) {
+            prchsStrg.add(prchs);
+        }
+
+        public List<Purchase> purchaseInStorage() {
+
+            return prchsStrg.getItems();
+        }
+
+
+//    public Bird birdInStorage(Name name, int number) {
+//        final Bird brd = birdStorage.[name.getId()][number]; // is it correct?
+//        return brd;
+//    }
+
+        // rabotaem s pticami (tovar)
+        // dibavlenie novoi pticy v hranilische
+        public void insertBird(Bird bird) {
+
+            birdStorage.add(bird);
+        }
+
+        class SimpleStorage<T> {
+            List<T> items = new ArrayList<>();
+
+            public void SimpleStorage() {
+
+            }
+
+            public void add(T item) {       //adding an item
+                items.add(item);
+            }
+
+            public List<T> getItems() {  //list of all items
+                return new ArrayList<>(items);
+            }
+
+            public T get(int index) {
+                return items.get(index);
             }
         }
     }
-
-}

@@ -22,9 +22,11 @@ public class Bird {
 		
 		this.price = price;
 	}
-	public Name getName() {
-		return name;
-	}
+
+	public Name getName(){
+        return name;
+    }
+
 	public Type getType() {
 		return type;
 	}

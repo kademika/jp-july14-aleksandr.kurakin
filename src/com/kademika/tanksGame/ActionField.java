@@ -8,6 +8,10 @@ import com.kademika.tanksGame.tanks.Action;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ActionField extends JPanel {
 
@@ -18,6 +22,7 @@ public class ActionField extends JPanel {
     private Tank defender;
     private Tank aggressor;
     private Bullet bullet;
+    private File history = new File("history.txt");
 
     /**
      * Write your code here.
@@ -36,6 +41,7 @@ public class ActionField extends JPanel {
     private void processAction(Action a, Tank t) throws Exception {
         if (a == Action.MOVE) {
             processMove(t);
+
         } else if (a == Action.FIRE) {
             processFire(t.fire());
         } else if (a == Action.TURN_DOWN) {
@@ -49,6 +55,7 @@ public class ActionField extends JPanel {
         } else if (a == Action.TURN_RIGHT) {
             processTurn(t, Direction.RIGHT);
         }
+        writeToFile(a);
     }
 
     private void processTurn(Tank tank, Direction direction) throws Exception {
@@ -204,6 +211,14 @@ public class ActionField extends JPanel {
     public String getQuadrant(int x, int y) {
         // input data should be correct
         return y / 64 + "_" + x / 64;
+    }
+
+    public void writeToFile(Action action){
+        try(FileOutputStream fos = new FileOutputStream(history)){
+            fos.write(action.toString().getBytes());    //change realisation to input new string in file
+        }  catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ActionField() throws Exception {

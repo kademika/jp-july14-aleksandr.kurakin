@@ -36,29 +36,29 @@ public class Shop {
 
     }
 	// methods to get reports
-	public void getPriceList(){		//show price list
-		System.out.println("Price list: ");
-		for(int i = 0; i < Name.values().length; i++){
-			if (strg.birdInStorage(Name.values()[i], 0) == null){
-				System.out.println(Name.values()[i] + "temporary not available now, sorry");
-			} else System.out.println(Name.values()[i] + " price is: " + strg.birdInStorage(Name.values()[i], 0).getPrice());
-		}
-	}
+//	public void getPriceList(){		//show price list
+//		System.out.println("Price list: ");
+//		for(int i = 0; i < Name.values().length; i++){
+//			if (strg.birdInStorage(Name.values()[i], 0) == null){
+//				System.out.println(Name.values()[i] + "temporary not available now, sorry");
+//			} else System.out.println(Name.values()[i] + " price is: " + strg.birdInStorage(Name.values()[i], 0).getPrice());
+//		}
+//	}
 	
-	public void getBirdsInStock (){	// ostatki na sklade
-		System.out.println("We have next birds in our shop:");
-		int sum;
-		for (int i = 0; i < Name.values().length; i++){
-			sum = 0;
-			for (int j = 0; j<100; j++){
-				if (strg.birdInStorage(Name.values()[i], j) != null){
-				sum +=1;
-			} else break;
-			
-		}
-			System.out.println(Name.values()[i] + " in stock: " + sum);
-		}
-	}
+//	public void getBirdsInStock (){	// ostatki na sklade
+//		System.out.println("We have next birds in our shop:");
+//		int sum;
+//		for (int i = 0; i < Name.values().length; i++){
+//			sum = 0;
+//			for (int j = 0; j<100; j++){
+//				if (strg.birdInStorage(Name.values()[i], j) != null){
+//				sum +=1;
+//			} else break;
+//
+//		}
+//			System.out.println(Name.values()[i] + " in stock: " + sum);
+//		}
+//	}
 	
 //	public void getLast7daysTransactions(){		//printing
 //		int today = 0;
