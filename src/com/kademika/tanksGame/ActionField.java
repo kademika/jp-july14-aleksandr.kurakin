@@ -8,10 +8,7 @@ import com.kademika.tanksGame.tanks.Action;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class ActionField extends JPanel {
 
@@ -23,6 +20,7 @@ public class ActionField extends JPanel {
     private Tank aggressor;
     private Bullet bullet;
     private File history = new File("history.txt");
+
 
     /**
      * Write your code here.
@@ -55,7 +53,7 @@ public class ActionField extends JPanel {
         } else if (a == Action.TURN_RIGHT) {
             processTurn(t, Direction.RIGHT);
         }
-        writeToFile(a);
+        writeToFile(t,a);
     }
 
     private void processTurn(Tank tank, Direction direction) throws Exception {
@@ -213,10 +211,33 @@ public class ActionField extends JPanel {
         return y / 64 + "_" + x / 64;
     }
 
-    public void writeToFile(Action action){
-        try(FileOutputStream fos = new FileOutputStream(history)){
-            fos.write(action.toString().getBytes());    //change realisation to input new string in file
-        }  catch (IOException e) {
+    public void writeToFile(Tank tank, Action action){
+
+        BufferedWriter output;
+        try {
+            output = new BufferedWriter(new FileWriter(history, true));
+            output.append(tank.getName() + " " + action.toString());
+            output.append("\n");
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+//        try(FileOutputStream fos = new FileOutputStream(history)){
+//            fos.write(action.toString().getBytes());    //change realisation to input new string in file
+//        }  catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    public void clearHistory(File history){
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(history);
+            writer.print("");
+            writer.close();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }

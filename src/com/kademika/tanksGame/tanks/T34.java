@@ -89,6 +89,8 @@ public class T34 extends AbstractTank {
         return action;
     }
 
-
+    public String getName(){
+        return "T34";
+    }
 
 }

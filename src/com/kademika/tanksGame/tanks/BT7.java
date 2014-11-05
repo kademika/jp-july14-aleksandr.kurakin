@@ -143,4 +143,8 @@ public class BT7 extends AbstractTank {
 
         return frontObject;
     }
+
+    public String getName(){
+        return "BT7";
+    }
 }
