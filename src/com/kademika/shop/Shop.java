@@ -24,15 +24,21 @@ public class Shop {
 	}
 
 	public void makePurchase(String customerName, Name birdName, int number) {  // добавить проверку на остаток птиц на складе!!!
-
+        int count =0;
+        System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
 //        if(!)
 		Purchase prchs = new Purchase (customerName,birdName, number);
 		for (int i = 0; i < number; i++){
-			prchs.addBirdToPurchase(strg.getBird(birdName));
+            Bird tmpBrd = strg.getBird(birdName);
+//            int count =0;
+            if(tmpBrd != null) {
+                prchs.addBirdToPurchase(tmpBrd);
+                count ++;
+            }
 		}
 		strg.insertPurchase(prchs);
-        System.out.println(customerName + " bout " + number + " " + birdName + "s.");
-
+        System.out.println(customerName + " bout " + count + " " + birdName + "s.");
+        System.out.println("New balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
 
     }
 	// methods to get reports
