@@ -8,9 +8,16 @@ import java.awt.*;
 
 public abstract class AbstractTank implements Tank {
 
+    private Boolean iCanMoveForward = true;
+
+    @Override // OK
+    public void setICanMoveForward(Boolean canMoveForward) {
+        iCanMoveForward = canMoveForward; //
+    }
+
     private int speed = 10;
     protected int movePath = 1;
-
+    protected int armor = 1;
     // 1 - up, 2 - down, 3 - left, 4 - right
     private Direction direction;
 
@@ -37,13 +44,15 @@ public abstract class AbstractTank implements Tank {
         this.destroyed = false;
     }
 
+    @Override // Turn
     public void turn(Direction direction) {
         this.direction = direction;
     }
 
-    public void move() {
-    }
+//    public void move() {
+//    }
 
+    @Override // Creating Bullet in front of Tank: OK
     public Bullet fire() {
         int bulletX = -100;
         int bulletY = -100;
@@ -63,6 +72,7 @@ public abstract class AbstractTank implements Tank {
         return new Bullet(bulletX, bulletY, direction);
     }
 
+    //
     public void draw(Graphics g) {
         if (!destroyed) {
             g.setColor(tankColor);
@@ -81,50 +91,47 @@ public abstract class AbstractTank implements Tank {
         }
     }
 
-    @Override
+    @Override // Check is Tank destroyed
     public boolean isDestroyed() {
         return destroyed;
     }
 
+    // Do we need this method?
     public void destroy() {
         destroyed = true;
     }
 
-    public Action moveToQuadrant(int v, int h) throws Exception {
-        return Action.NONE;
-    }
-
-    public void moveRandom() throws Exception {
-    }
-
-    public void clean() throws Exception {
-    }
-
+    @Override // X += X
     public void updateX(int x) {
         this.x += x;
     }
 
+    @Override // Y += Y
     public void updateY(int y) {
         this.y += y;
     }
 
+    @Override // OK
     public Direction getDirection() {
         return direction;
     }
 
+    @Override // X
     public int getX() {
         return x;
     }
 
+    @Override // Y
     public int getY() {
         return y;
     }
 
+    @Override // Return speed
     public int getSpeed() {
         return speed;
     }
 
-    @Override
+    @Override // Return move path
     public int getMovePath() {
         return movePath;
     }

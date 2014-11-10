@@ -3,6 +3,7 @@ package com.kademika.tanksGame;
 
 import com.kademika.tanksGame.fieldObjects.BFObject;
 import com.kademika.tanksGame.fieldObjects.Blank;
+import com.kademika.tanksGame.fieldObjects.Water;
 import com.kademika.tanksGame.tanks.*;
 import com.kademika.tanksGame.tanks.Action;
 
@@ -13,8 +14,6 @@ import java.io.*;
 public class ActionField extends JPanel {
 
     private boolean COLORDED_MODE = false;
-
-//    private boolean illegalMove = false;
     private BattleField battleField;
     private Tank defender;
     private Tank aggressor;
@@ -25,20 +24,28 @@ public class ActionField extends JPanel {
     /**
      * Write your code here.
      */
-    void runTheGame() throws Exception {
+
+    // Run The Game With Writing in File: OK
+    void runTheGameWithWriteToFile() throws Exception {
+        Action action;
         while (true) {
             if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
-                processAction(aggressor.setUp(), aggressor);
+                action = aggressor.setUp();
+                processAction(action, aggressor);
+                writeToFile(action,aggressor);
             }
             if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
-                processAction(defender.setUp(), defender);
+                action = defender.setUp();
+                processAction(action, defender);
+                writeToFile(action, defender);
             }
         }
     }
 
+    // Process Action
     private void processAction(Action a, Tank t) throws Exception {
         if (a == Action.MOVE) {
-            processMove(t);
+            t.setICanMoveForward(processMove(t));
 
         } else if (a == Action.FIRE) {
             processFire(t.fire());
@@ -53,15 +60,17 @@ public class ActionField extends JPanel {
         } else if (a == Action.TURN_RIGHT) {
             processTurn(t, Direction.RIGHT);
         }
-        writeToFile(t,a);
+//        writeToFile(a, t);
     }
 
+    // Process Turn
     private void processTurn(Tank tank, Direction direction) throws Exception {
         tank.turn(direction);
         repaint();
     }
 
-    private void processMove(Tank tank) throws Exception {
+    //Process Move
+    private boolean processMove(Tank tank) throws Exception {
 
 //        processTurn(tank);
         Direction direction = tank.getDirection();
@@ -71,49 +80,39 @@ public class ActionField extends JPanel {
             int covered = 0;
 
             String tankQuadrant = getQuadrant(tank.getX(), tank.getY());
-            int v = Integer.parseInt(tankQuadrant.split("_")[0]);
-            int h = Integer.parseInt(tankQuadrant.split("_")[1]);
+            //split string form coordinates in array
+            int v = Integer.parseInt(tankQuadrant.split("_")[0]); // V - means vertical or Y/64
+            int h = Integer.parseInt(tankQuadrant.split("_")[1]); // H - means horizontal or X/64
 
             // check limits x: 0, 513; y: 0, 513
-            if ((direction == Direction.UP && tank.getY() == 0) || (direction == Direction.DOWN && tank.getY() >= 512)
-                    || (direction == Direction.LEFT && tank.getX() == 0) || (direction == Direction.RIGHT && tank.getX() >= 512)) {
-                System.out.println("[illegal move] direction: " + direction
-                        + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
-                return;
+            if ((direction == Direction.UP && tank.getY()<= 0) || (direction == Direction.DOWN && tank.getY() >= 512)
+                    || (direction == Direction.LEFT && tank.getX() <= 0) || (direction == Direction.RIGHT && tank.getX() >= 512)) {
+                System.out.println(tank.getName()+ " [illegal move1] direction: " + direction + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
+                return false;
             }
 
             // check next quadrant before move
-            if (direction == Direction.UP) {
+            if (direction == Direction.UP && v < 9) {
                 v++;
-            } else if (direction == Direction.DOWN) {
+            } else if (direction == Direction.DOWN && v > 0) {
                 v--;
-            } else if (direction == Direction.RIGHT) {
+            } else if (direction == Direction.RIGHT && h <9) {
                 h++;
-            } else if (direction == Direction.LEFT) {
+            } else if (direction == Direction.LEFT && h > 0) {
                 h--;
             }
             BFObject bfobject;
             if (v>=0 && v<9 && h>=0 && h<9){
             bfobject = battleField.scanQuadrant(v, h);
-            if (!(bfobject instanceof Blank) && !bfobject.isDestroyed()
-//                    && !(bfobject instanceof Water)
+            if (!(bfobject instanceof Blank) && !bfobject.isDestroyed() && !(bfobject instanceof Water)
                     ) {
-//                this.processFire(tank.fire());
-//                illegalMove = true;
-                System.out.println("[illegal move] direction: " + direction
+
+                System.out.println(tank.getName()+ "[illegal move2] direction: " + direction
                         + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
-                return;
+                return false;
             }}
-            else return;
-//            else if(bfobject instanceof Water){
-//                System.out.println("[illegal move] direction: " + direction
-//                        + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
-//                tank.
-//                return;
-//            }
+            else return false; // This can be a mistake!!!
 
-
-            // process move
 
             while (covered < 64) {
                 if (direction == Direction.UP) {
@@ -136,9 +135,10 @@ public class ActionField extends JPanel {
                 Thread.sleep(tank.getSpeed());
             }
         }
-//        return true;
+        return true;
     }
 
+    // Process Fire
     private void processFire(Bullet bullet) throws Exception {
         this.bullet = bullet;
         int step = 1;
@@ -164,26 +164,31 @@ public class ActionField extends JPanel {
         }
     }
 
+    // Process interception
     private boolean processInterception() {
-        String coordinates = getQuadrant(bullet.getX(), bullet.getY());
-        int y = Integer.parseInt(coordinates.split("_")[0]);
-        int x = Integer.parseInt(coordinates.split("_")[1]);
+        String bulletCoordinates = getQuadrant(bullet.getX(), bullet.getY());
 
-        if (y >= 0 && y < 9 && x >= 0 && x < 9) {
-            BFObject bfObject = battleField.scanQuadrant(y, x);
+//        int v = bullet.getY();
+//        int h = bullet.getX();
+
+        int v = Integer.parseInt(bulletCoordinates.split("_")[0]);
+        int h = Integer.parseInt(bulletCoordinates.split("_")[1]);
+
+        if (v >= 0 && v < 9 && h >= 0 && h < 9) {
+            BFObject bfObject = battleField.scanQuadrant(v, h);
             if (!bfObject.isDestroyed() && !(bfObject instanceof Blank)) {
-                battleField.destroyObject(y, x);
+                battleField.destroyObject(v, h);
                 return true;
             }
 
             // check aggressor
-            if (!aggressor.isDestroyed() && checkInterception(getQuadrant(aggressor.getX(), aggressor.getY()), coordinates)) {
+            if (!aggressor.isDestroyed() && checkInterception(getQuadrant(aggressor.getX(), aggressor.getY()), bulletCoordinates)) {
                 aggressor.destroy();
                 return true;
             }
 
-            // check aggressor
-            if (!defender.isDestroyed() && checkInterception(getQuadrant(defender.getX(), defender.getY()), coordinates)) {
+            // check defender
+            if (!defender.isDestroyed() && checkInterception(getQuadrant(defender.getX(), defender.getY()), bulletCoordinates)) {
                 defender.destroy();
                 return true;
             }
@@ -191,6 +196,7 @@ public class ActionField extends JPanel {
         return false;
     }
 
+    // Check Interception
     private boolean checkInterception(String object, String quadrant) {
         int oy = Integer.parseInt(object.split("_")[0]);
         int ox = Integer.parseInt(object.split("_")[1]);
@@ -206,12 +212,14 @@ public class ActionField extends JPanel {
         return false;
     }
 
+    // Get quadrant
     public String getQuadrant(int x, int y) {
         // input data should be correct
         return y / 64 + "_" + x / 64;
     }
 
-    public void writeToFile(Tank tank, Action action){
+    // writing to file
+    public void writeToFile(Action action, Tank tank){
 
         BufferedWriter output;
         try {
@@ -222,15 +230,9 @@ public class ActionField extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-//        try(FileOutputStream fos = new FileOutputStream(history)){
-//            fos.write(action.toString().getBytes());    //change realisation to input new string in file
-//        }  catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
+    // Erase history file
     public void clearHistory(File history){
         PrintWriter writer = null;
         try {
@@ -242,6 +244,7 @@ public class ActionField extends JPanel {
         }
     }
 
+    // ActionField constructor without parameter
     public ActionField() throws Exception {
         battleField = new BattleField();
         defender = new T34(battleField);

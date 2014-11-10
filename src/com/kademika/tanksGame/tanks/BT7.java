@@ -9,6 +9,7 @@ import java.awt.*;
 public class BT7 extends AbstractTank {
     BFObject eagle;
     BattleField bf;
+    protected int armor = 2;
 
     public BT7(BattleField bf) {
         super(bf);
@@ -28,7 +29,7 @@ public class BT7 extends AbstractTank {
 
     private int step = 0;
     private Object[] actoins = new Object[]{
-            Action.TURN_UP,
+            Action.TURN_DOWN,
             Action.FIRE,
             Action.MOVE,
             Action.TURN_RIGHT,
@@ -142,6 +143,14 @@ public class BT7 extends AbstractTank {
         }
 
         return frontObject;
+    }
+    @Override
+    public void destroy() {
+        if (armor > 0) {
+            armor--;
+        } else {
+            super.destroy();
+        }
     }
 
     public String getName(){

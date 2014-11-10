@@ -22,8 +22,8 @@ public class BattleField implements Drawable {
             {"B", "R", "B", " ", " ", " ", "B", "R", "B"},
             {"B", "B", "R", " ", "B", " ", "R", "B", "B"},
             {"B", "B", " ", "R", "B", "R", " ", "B", "B"},
-            {"B", "R", " ", " ", "W", " ", " ", "R", "B"},
-            {"B", " ", " ", "B", "B", "B", " ", " ", "B"},
+            {"B", "R", " ", "B", "W", " ", " ", "R", "B"},
+            {"B", " ", " ", " ", "B", "B", " ", " ", "B"},
             {"B", " ", "W", "R", "E", "R", "W", " ", "B"}
     };
 
@@ -60,8 +60,8 @@ public class BattleField implements Drawable {
                     bfObject = new Rock(x, y);
                 } else if (obj.equals(EAGLE)) {
                     bfObject = new Eagle(x, y);
-                } else if (obj.equals(ROCK)) {
-                    bfObject = new Rock(x, y);
+//                } else if (obj.equals(ROCK)) {
+//                    bfObject = new Rock(x, y);
                 } else if (obj.equals(WATER)) {
                     bfObject = new Water(x, y);
                 } else {

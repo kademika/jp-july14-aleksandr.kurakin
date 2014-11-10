@@ -8,7 +8,7 @@ import java.awt.Color;
 
 public class T34 extends AbstractTank {
 
-
+    // Constructor with 128 512 point Tank, only BF need to create instance
     public T34(BattleField bf) {
         super(bf, 128, 512, Direction.UP);
         tankColor = new Color(0, 255, 0);
@@ -16,6 +16,7 @@ public class T34 extends AbstractTank {
 
     }
 
+    // Constructor with full numbers of parameters, only Color is default
     public T34(BattleField bf, int x, int y, Direction direction) {
         super(bf, x, y, direction);
         tankColor = new Color(0, 255, 0);
@@ -30,7 +31,7 @@ public class T34 extends AbstractTank {
             Action.TURN_RIGHT,
             Action.FIRE,
             Action.MOVE,
-            Action.TURN_DOWN,
+            Action.TURN_UP,
             Action.FIRE,
             Action.FIRE
     };
@@ -51,9 +52,8 @@ public class T34 extends AbstractTank {
         return (Action) actoins[step++];
     }
 
-    @Override
-    public Action moveToQuadrant(int v, int h) throws Exception {   //need to overwrite all method
-
+    //need to overwrite all method, did not need yet
+    public Action moveToQuadrant(int v, int h) throws Exception {
         Action action = Action.NONE;
 
 //        while (!eagle.isDestroyed()) {
@@ -69,19 +69,19 @@ public class T34 extends AbstractTank {
             } else {
                 this.turn(Direction.LEFT);
                 while (this.getX() != x) {
-                    move();
+//                    move();
                 }
             }
 
             if (this.getY() < y) {
                 this.turn(Direction.DOWN);
                 while (this.getY() != y) {
-                    move();
+//                    move();
                 }
             } else {
                 this.turn(Direction.UP);
                 while (this.getY() != y) {
-                    move();
+//                    move();
                 }
             }
 

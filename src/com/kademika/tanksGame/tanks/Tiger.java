@@ -41,4 +41,9 @@ public class Tiger extends AbstractTank {
     public Action setUp() {
         return Action.FIRE;
     }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }
