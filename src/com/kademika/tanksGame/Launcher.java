@@ -8,10 +8,11 @@ public class Launcher {
 
         //clear the history file
 		ActionField af = new ActionField();
-        af.clearHistory(new File("history.txt"));
+//        af.clearHistory(new File("history.txt"));
 
         //run the game
-		af.runTheGameWithWriteToFile();
+//		af.runTheGameWithWriteToFile();
+        af.replay();
 	}
 
 }

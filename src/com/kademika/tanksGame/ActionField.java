@@ -24,6 +24,29 @@ public class ActionField extends JPanel {
     /**
      * Write your code here.
      */
+    void replay(){
+
+        String command;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(history));
+            while ((command = reader.readLine()) !=null){
+                if (command.split("_")[0] == "T34"){
+                    processAction(checkAction(command.split("_")[1]),defender);
+                } else
+                    if (command.split("_")[0] == "BT7"){
+                        processAction(checkAction(command.split("_")[1]),aggressor);
+                    }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     // Run The Game With Writing in File: OK
     void runTheGameWithWriteToFile() throws Exception {
@@ -224,12 +247,42 @@ public class ActionField extends JPanel {
         BufferedWriter output;
         try {
             output = new BufferedWriter(new FileWriter(history, true));
-            output.append(tank.getName() + " " + action.toString());
+            output.append(tank.getName() + "_" + action.toString());
             output.append("\n");
             output.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Action checkAction (String command){
+        Action action= Action.NONE;
+        if(command == "MOVE"){
+            action = Action.MOVE;
+            return action;
+        } else
+        if (command == "FIRE"){
+            action = Action.FIRE;
+            return action;
+        } else
+        if (command == "TURN_LEFT"){
+            action = Action.TURN_LEFT;
+            return action;
+        } else
+        if(command == "TURN_UP"){
+            action = Action.TURN_UP;
+            return action;
+        } else
+        if(command == "TURN_RIGHT"){
+            action = Action.TURN_RIGHT;
+            return action;
+        } else
+        if(command == "TURN_DOWN"){
+            action = Action.TURN_DOWN;
+            return action;
+        }
+
+        return action;
     }
 
     // Erase history file
