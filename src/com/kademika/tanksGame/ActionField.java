@@ -24,18 +24,24 @@ public class ActionField extends JPanel {
     /**
      * Write your code here.
      */
-    void replay(){
+    void replay() {
 
         String command;
         try {
             BufferedReader reader = new BufferedReader(new FileReader(history));
-            while ((command = reader.readLine()) !=null){
-                if (command.split("_")[0] == "T34"){
-                    processAction(checkAction(command.split("_")[1]),defender);
+            while ((command = reader.readLine()) != null) {
+//                System.out.println(command);
+                if (command.split("_",2)[0].equals("T34")) {
+                    System.out.println(command.split("_",2)[0] + " T34");
+                    processAction(checkAction(command.split("_",2)[1]), defender);
+                    System.out.println(checkAction(command.split("_",2)[1]));
+
                 } else
-                    if (command.split("_")[0] == "BT7"){
-                        processAction(checkAction(command.split("_")[1]),aggressor);
-                    }
+                if (command.split("_",2)[0].equals("BT7")) {
+                    System.out.println(command.split("_",2)[0] + " BT7");
+                    processAction(checkAction(command.split("_",2)[1]), aggressor);
+                    System.out.println(checkAction(command.split("_",2)[1]));
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -55,7 +61,7 @@ public class ActionField extends JPanel {
             if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
                 action = aggressor.setUp();
                 processAction(action, aggressor);
-                writeToFile(action,aggressor);
+                writeToFile(action, aggressor);
             }
             if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
                 action = defender.setUp();
@@ -108,9 +114,10 @@ public class ActionField extends JPanel {
             int h = Integer.parseInt(tankQuadrant.split("_")[1]); // H - means horizontal or X/64
 
             // check limits x: 0, 513; y: 0, 513
-            if ((direction == Direction.UP && tank.getY()<= 0) || (direction == Direction.DOWN && tank.getY() >= 512)
+            if ((direction == Direction.UP && tank.getY() <= 0) || (direction == Direction.DOWN && tank.getY() >= 512)
                     || (direction == Direction.LEFT && tank.getX() <= 0) || (direction == Direction.RIGHT && tank.getX() >= 512)) {
-                System.out.println(tank.getName()+ " [illegal move1] direction: " + direction + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
+                System.out.println(tank.getName() + " [illegal move1] direction: " + direction + " tankX: " + tank.getX() + ", " +
+                        "tankY: " + tank.getY());
                 return false;
             }
 
@@ -119,22 +126,22 @@ public class ActionField extends JPanel {
                 v++;
             } else if (direction == Direction.DOWN && v > 0) {
                 v--;
-            } else if (direction == Direction.RIGHT && h <9) {
+            } else if (direction == Direction.RIGHT && h < 9) {
                 h++;
             } else if (direction == Direction.LEFT && h > 0) {
                 h--;
             }
             BFObject bfobject;
-            if (v>=0 && v<9 && h>=0 && h<9){
-            bfobject = battleField.scanQuadrant(v, h);
-            if (!(bfobject instanceof Blank) && !bfobject.isDestroyed() && !(bfobject instanceof Water)
-                    ) {
+            if (v >= 0 && v < 9 && h >= 0 && h < 9) {
+                bfobject = battleField.scanQuadrant(v, h);
+                if (!(bfobject instanceof Blank) && !bfobject.isDestroyed() && !(bfobject instanceof Water)
+                        ) {
 
-                System.out.println(tank.getName()+ "[illegal move2] direction: " + direction
-                        + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
-                return false;
-            }}
-            else return false; // This can be a mistake!!!
+                    System.out.println(tank.getName() + "[illegal move2] direction: " + direction
+                            + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
+                    return false;
+                }
+            } else return false; // This can be a mistake!!!
 
 
             while (covered < 64) {
@@ -242,7 +249,7 @@ public class ActionField extends JPanel {
     }
 
     // writing to file
-    public void writeToFile(Action action, Tank tank){
+    public void writeToFile(Action action, Tank tank) {
 
         BufferedWriter output;
         try {
@@ -255,38 +262,33 @@ public class ActionField extends JPanel {
         }
     }
 
-    public Action checkAction (String command){
-        Action action= Action.NONE;
-        if(command == "MOVE"){
+    public Action checkAction(String command) {
+        Action action = Action.NONE;
+        if (command.equals("MOVE")) {
             action = Action.MOVE;
-            return action;
-        } else
-        if (command == "FIRE"){
+//            return action;
+        } else if (command.equals("FIRE")) {
             action = Action.FIRE;
-            return action;
-        } else
-        if (command == "TURN_LEFT"){
+//            return action;
+        } else if (command.equals("TURN_LEFT")) {
             action = Action.TURN_LEFT;
-            return action;
-        } else
-        if(command == "TURN_UP"){
+//            return action;
+        } else if (command.equals("TURN_UP")) {
             action = Action.TURN_UP;
-            return action;
-        } else
-        if(command == "TURN_RIGHT"){
+//            return action;
+        } else if (command.equals("TURN_RIGHT")) {
             action = Action.TURN_RIGHT;
-            return action;
-        } else
-        if(command == "TURN_DOWN"){
+//            return action;
+        } else if (command.equals("TURN_DOWN")) {
             action = Action.TURN_DOWN;
-            return action;
+//            return action;
         }
 
         return action;
     }
 
     // Erase history file
-    public void clearHistory(File history){
+    public void clearHistory(File history) {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(history);
