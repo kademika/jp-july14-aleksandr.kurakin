@@ -33,13 +33,6 @@ public class Bullet implements Drawable, Destroyable {
         this.y += y;
     }
 
-    @Override
-    public void draw(Graphics g) {
-        if (!destroyed) {
-            g.setColor(new Color(255, 255, 0));
-            g.fillRect(this.x, this.y, 14, 14);
-        }
-    }
 
     public void destroy() {
         destroyed = true;
@@ -64,5 +57,13 @@ public class Bullet implements Drawable, Destroyable {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        if (!destroyed) {
+            g.setColor(new Color(255, 255, 0));
+            g.fillRect(this.x, this.y, 14, 14);
+        }
     }
 }

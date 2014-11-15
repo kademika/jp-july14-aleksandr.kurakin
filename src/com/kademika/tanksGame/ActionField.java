@@ -56,6 +56,8 @@ public class ActionField extends JPanel {
 
     // Run The Game With Writing in File: OK
     void runTheGameWithWriteToFile() throws Exception {
+        //clear the history file
+        clearHistory(new File("history.txt"));
         Action action;
         while (true) {
             if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
@@ -266,22 +268,22 @@ public class ActionField extends JPanel {
         Action action = Action.NONE;
         if (command.equals("MOVE")) {
             action = Action.MOVE;
-//            return action;
+            return action;
         } else if (command.equals("FIRE")) {
             action = Action.FIRE;
-//            return action;
+            return action;
         } else if (command.equals("TURN_LEFT")) {
             action = Action.TURN_LEFT;
-//            return action;
+            return action;
         } else if (command.equals("TURN_UP")) {
             action = Action.TURN_UP;
-//            return action;
+            return action;
         } else if (command.equals("TURN_RIGHT")) {
             action = Action.TURN_RIGHT;
-//            return action;
+            return action;
         } else if (command.equals("TURN_DOWN")) {
             action = Action.TURN_DOWN;
-//            return action;
+            return action;
         }
 
         return action;

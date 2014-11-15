@@ -58,37 +58,18 @@ public abstract class AbstractTank implements Tank {
         int bulletY = -100;
         if (direction == Direction.UP) {
             bulletX = x + 25;
-            bulletY = y - 64;
+            bulletY = y - 0;
         } else if (direction == Direction.DOWN) {
             bulletX = x + 25;
             bulletY = y + 64;
         } else if (direction == Direction.LEFT) {
-            bulletX = x - 64;
+            bulletX = x - 0;
             bulletY = y + 25;
         } else if (direction == Direction.RIGHT) {
             bulletX = x + 64;
             bulletY = y + 25;
         }
         return new Bullet(bulletX, bulletY, direction);
-    }
-
-    //
-    public void draw(Graphics g) {
-        if (!destroyed) {
-            g.setColor(tankColor);
-            g.fillRect(this.getX(), this.getY(), 64, 64);
-
-            g.setColor(towerColor);
-            if (this.getDirection() == Direction.UP) {
-                g.fillRect(this.getX() + 20, this.getY(), 24, 34);
-            } else if (this.getDirection() == Direction.DOWN) {
-                g.fillRect(this.getX() + 20, this.getY() + 30, 24, 34);
-            } else if (this.getDirection() == Direction.LEFT) {
-                g.fillRect(this.getX(), this.getY() + 20, 34, 24);
-            } else {
-                g.fillRect(this.getX() + 30, this.getY() + 20, 34, 24);
-            }
-        }
     }
 
     @Override // Check is Tank destroyed
@@ -134,5 +115,24 @@ public abstract class AbstractTank implements Tank {
     @Override // Return move path
     public int getMovePath() {
         return movePath;
+    }
+
+    //
+    public void draw(Graphics g) {
+        if (!destroyed) {
+            g.setColor(tankColor);
+            g.fillRect(this.getX(), this.getY(), 64, 64);
+
+            g.setColor(towerColor);
+            if (this.getDirection() == Direction.UP) {
+                g.fillRect(this.getX() + 20, this.getY(), 24, 34);
+            } else if (this.getDirection() == Direction.DOWN) {
+                g.fillRect(this.getX() + 20, this.getY() + 30, 24, 34);
+            } else if (this.getDirection() == Direction.LEFT) {
+                g.fillRect(this.getX(), this.getY() + 20, 34, 24);
+            } else {
+                g.fillRect(this.getX() + 30, this.getY() + 20, 34, 24);
+            }
+        }
     }
 }
