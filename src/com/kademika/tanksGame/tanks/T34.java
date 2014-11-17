@@ -24,16 +24,16 @@ public class T34 extends AbstractTank {
 //        this.bf = bf;
     }
 
-    private Object[] actoins = new Object[]{
+    private Action[] actoins = new Action[]{
             Action.TURN_UP,
             Action.FIRE,
             Action.MOVE,
             Action.TURN_RIGHT,
             Action.FIRE,
             Action.MOVE,
-            Action.TURN_UP,
+            Action.TURN_LEFT,
             Action.FIRE,
-            Action.FIRE
+            Action.MOVE
     };
 
     private int step = 0;
@@ -43,13 +43,13 @@ public class T34 extends AbstractTank {
         if (step >= actoins.length) {
             step = 0;
         }
-        if (!(actoins[step] instanceof Action)) {
-            turn((Direction) actoins[step++]);
-        }
-        if (step >= actoins.length) {
-            step = 0;
-        }
-        return (Action) actoins[step++];
+//        if (!(actoins[step] instanceof Action)) {
+//            turn((Direction) actoins[step++]);
+//        }
+//        if (step >= actoins.length) {
+//            step = 0;
+//        }
+        return actoins[step++];
     }
 
     //need to overwrite all method, did not need yet

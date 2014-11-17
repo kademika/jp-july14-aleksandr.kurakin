@@ -28,16 +28,16 @@ public class BT7 extends AbstractTank {
     }
 
     private int step = 0;
-    private Object[] actoins = new Object[]{
+    private Action[] actoins = new Action[]{
             Action.TURN_DOWN,
             Action.FIRE,
             Action.MOVE,
             Action.TURN_RIGHT,
             Action.FIRE,
             Action.MOVE,
-            Action.TURN_DOWN,
+            Action.TURN_LEFT,
             Action.FIRE,
-            Action.FIRE
+            Action.MOVE
     };
 
 //    private int step = 0;
@@ -48,10 +48,10 @@ public class BT7 extends AbstractTank {
             step = 0;
         }
 
-        if (step >= actoins.length) {
-            step = 0;
-        }
-        return (Action) actoins[step++];
+//        if (step >= actoins.length) {
+//            step = 0;
+//        }
+        return  actoins[step++];
     }
 
 //    public Action [] destroyEagle() {

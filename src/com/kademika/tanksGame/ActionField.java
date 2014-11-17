@@ -73,25 +73,95 @@ public class ActionField extends JPanel {
         }
     }
 
+    //Run game in multi threads
+    void runTheGameMT() throws Exception {
+        //clear the history file
+        clearHistory(new File("history.txt"));
+//        Action action;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Action action;
+                while (true) {
+
+                    if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
+                        action = aggressor.setUp();
+                        try {
+                            processAction(action, aggressor);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//                        writeToFile(action, aggressor);
+                    }
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Action action;
+                while (true) {
+                    if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
+                        try {
+                        action = defender.setUp();
+
+                            processAction(action, defender);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//                        writeToFile(action, defender);
+                    }
+
+
+                }
+            }
+        }).start();
+    }
+
     // Process Action
-    private void processAction(Action a, Tank t) throws Exception {
+    private void processAction(Action a, final Tank t) throws Exception {
         if (a == Action.MOVE) {
             t.setICanMoveForward(processMove(t));
-
+            return;
         } else if (a == Action.FIRE) {
             processFire(t.fire());
+
+            // From here
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                            try {
+//                                processFire(t.fire());
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                           writeToFile(Action.FIRE, aggressor);
+//                        }
+//
+//
+//            }).start();
+            // To here
+            return;
+
         } else if (a == Action.TURN_DOWN) {
             processTurn(t, Direction.DOWN);
+            return;
         } else if (a == Action.TURN_UP) {
             processTurn(t, Direction.UP);
+            return;
         } else if (a == Action.TURN_DOWN) {
             processTurn(t, Direction.DOWN);
+            return;
         } else if (a == Action.TURN_LEFT) {
             processTurn(t, Direction.LEFT);
+            return;
         } else if (a == Action.TURN_RIGHT) {
             processTurn(t, Direction.RIGHT);
         }
-//        writeToFile(a, t);
+        writeToFile(a, t);
     }
 
     // Process Turn
@@ -125,9 +195,9 @@ public class ActionField extends JPanel {
 
             // check next quadrant before move
             if (direction == Direction.UP && v < 9) {
-                v++;
-            } else if (direction == Direction.DOWN && v > 0) {
                 v--;
+            } else if (direction == Direction.DOWN && v > 0) {
+                v++;
             } else if (direction == Direction.RIGHT && h < 9) {
                 h++;
             } else if (direction == Direction.LEFT && h > 0) {
@@ -143,7 +213,9 @@ public class ActionField extends JPanel {
                             + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
                     return false;
                 }
-            } else return false; // This can be a mistake!!!
+            }
+
+//            else return false; // This can be a mistake!!!
 
 
             while (covered < 64) {

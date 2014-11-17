@@ -11,8 +11,9 @@ public class Launcher {
 //        af.clearHistory(new File("history.txt"));
 
         //run the game
-		af.runTheGameWithWriteToFile();
+//		af.runTheGameWithWriteToFile();
 //        af.replay();
+        af.runTheGameMT();
 	}
 
 }
