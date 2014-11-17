@@ -18,7 +18,30 @@ public class Bullet implements Drawable, Destroyable {
 
     private boolean destroyed;
 
-    public Bullet(int x, int y, Direction direction) {
+    public Bullet(Tank tank) {
+
+        if (tank.getDirection() == Direction.UP) {
+            this.x = tank.getX() + 25;
+            this.y = tank.getY() - 0;
+        } else if (tank.getDirection() == Direction.DOWN) {
+            this.x = tank.getX() + 25;
+            this.y = tank.getY() + 64;
+        } else if (tank.getDirection() == Direction.LEFT) {
+            this.x = tank.getX() - 0;
+            this.y = tank.getY() + 25;
+        } else if (tank.getDirection() == Direction.RIGHT) {
+            this.x = tank.getX() + 64;
+            this.y = tank.getY() + 25;
+        }
+        this.direction = tank.getDirection();
+
+//        this.x = x;
+//        this.y = y;
+//        this.direction = direction;
+        this.destroyed = false;
+    }
+
+    public Bullet(int x, int y, Direction direction){
         this.x = x;
         this.y = y;
         this.direction = direction;

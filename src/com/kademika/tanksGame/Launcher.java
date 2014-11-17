@@ -6,9 +6,9 @@ public class Launcher {
 
 	public static void main(String[] args) throws Exception {
 
-        //clear the history file
 		ActionField af = new ActionField();
-//        af.clearHistory(new File("history.txt"));
+        //clear the history file
+        af.clearHistory(new File("history.txt"));
 
         //run the game
 //		af.runTheGameWithWriteToFile();

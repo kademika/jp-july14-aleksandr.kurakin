@@ -83,9 +83,9 @@ public class ActionField extends JPanel {
             @Override
             public void run() {
                 Action action;
-                while (true) {
+                while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
 
-                    if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
+
                         action = aggressor.setUp();
                         try {
                             processAction(action, aggressor);
@@ -93,7 +93,7 @@ public class ActionField extends JPanel {
                             e.printStackTrace();
                         }
 //                        writeToFile(action, aggressor);
-                    }
+
                 }
             }
         }).start();
@@ -102,8 +102,8 @@ public class ActionField extends JPanel {
             @Override
             public void run() {
                 Action action;
-                while (true) {
-                    if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
+                while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
+
                         try {
                         action = defender.setUp();
 
@@ -112,8 +112,6 @@ public class ActionField extends JPanel {
                             e.printStackTrace();
                         }
 //                        writeToFile(action, defender);
-                    }
-
 
                 }
             }
@@ -123,7 +121,9 @@ public class ActionField extends JPanel {
     // Process Action
     private void processAction(Action a, final Tank t) throws Exception {
         if (a == Action.MOVE) {
-            t.setICanMoveForward(processMove(t));
+//            t.setICanMoveForward(
+                    processMove(t);
+//            );
             return;
         } else if (a == Action.FIRE) {
             processFire(t.fire());
@@ -134,6 +134,7 @@ public class ActionField extends JPanel {
 //                public void run() {
 //
 //                            try {
+//
 //                                processFire(t.fire());
 //                            } catch (Exception e) {
 //                                e.printStackTrace();
@@ -170,7 +171,7 @@ public class ActionField extends JPanel {
         repaint();
     }
 
-    //Process Move
+    //Process Move, ARRAY
     private boolean processMove(Tank tank) throws Exception {
 
 //        processTurn(tank);
@@ -244,6 +245,7 @@ public class ActionField extends JPanel {
 
     // Process Fire
     private void processFire(Bullet bullet) throws Exception {
+//        Thread.sleep(500);//experiment with latency in fire
         this.bullet = bullet;
         int step = 1;
         while ((bullet.getX() > -14 && bullet.getX() < 590)
@@ -268,7 +270,7 @@ public class ActionField extends JPanel {
         }
     }
 
-    // Process interception
+    // Process interception, ARRAY
     private boolean processInterception() {
         String bulletCoordinates = getQuadrant(bullet.getX(), bullet.getY());
 
@@ -280,7 +282,7 @@ public class ActionField extends JPanel {
 
         if (v >= 0 && v < 9 && h >= 0 && h < 9) {
             BFObject bfObject = battleField.scanQuadrant(v, h);
-            if (!bfObject.isDestroyed() && !(bfObject instanceof Blank)) {
+            if (!bfObject.isDestroyed() && !(bfObject instanceof Blank) &&!(bfObject instanceof Water)) {
                 battleField.destroyObject(v, h);
                 return true;
             }
@@ -300,7 +302,7 @@ public class ActionField extends JPanel {
         return false;
     }
 
-    // Check Interception
+    // Check Interception, ARRAY
     private boolean checkInterception(String object, String quadrant) {
         int oy = Integer.parseInt(object.split("_")[0]);
         int ox = Integer.parseInt(object.split("_")[1]);
@@ -316,7 +318,7 @@ public class ActionField extends JPanel {
         return false;
     }
 
-    // Get quadrant
+    // Get quadrant, ARRAY
     public String getQuadrant(int x, int y) {
         // input data should be correct
         return y / 64 + "_" + x / 64;
@@ -373,7 +375,7 @@ public class ActionField extends JPanel {
         }
     }
 
-    // ActionField constructor without parameter
+    // ActionField constructor without parameter, ARRAY
     public ActionField() throws Exception {
         battleField = new BattleField();
         defender = new T34(battleField);
