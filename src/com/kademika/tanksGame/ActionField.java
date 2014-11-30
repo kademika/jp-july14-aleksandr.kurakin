@@ -16,20 +16,35 @@ import java.util.List;
 public class ActionField extends JPanel {
 
     private boolean COLORDED_MODE = false;
-
-    public BattleField getBattleField() {
-        return battleField;
-    }
-
+    private MainFrame frame;
     private BattleField battleField;
     private Tank defender;
     private Tank aggressor;
-//    private Bullet bullet;
     private volatile List<Bullet> bullets = new ArrayList<>();
     private File history = new File("history.txt");
     private int step = 1;
     private volatile int bulletCount = 0;
 
+    // ActionField constructor without parameter, ARRAY
+    public ActionField() throws Exception {
+//        this.frame = frame;
+        battleField = new BattleField();
+        defender = new T34(battleField);
+
+        String location = battleField.getAggressorLocation();
+        aggressor = new BT7(battleField,
+                Integer.parseInt(location.split("_")[1]), Integer.parseInt(location.split("_")[0]), Direction.RIGHT);
+
+//        bullet = new Bullet(-100, -100, Direction.NONE);
+//            JFrame frame = mainFrame;
+//        JFrame frame = new JFrame("BATTLE FIELD, DAY 7");
+//        frame.setLocation(750, 150);
+//        frame.setMinimumSize(new Dimension(battleField.getBfWidth(), battleField.getBfHeight() + 22));
+//        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        frame.getContentPane().add(this);
+//        frame.pack();
+//        frame.setVisible(true);
+    }
 
     /**
      * Write your code here.
@@ -111,6 +126,7 @@ public class ActionField extends JPanel {
                     }
 //                        writeToFile(action, aggressor);
                 }
+                frame.gameOverPanel();
             }
         }).start();
     }
@@ -132,6 +148,7 @@ public class ActionField extends JPanel {
                     }
 //                        writeToFile(action, defender);
                 }
+                frame.gameOverPanel();
             }
         }).start();
     }
@@ -228,9 +245,7 @@ public class ActionField extends JPanel {
             }).start();
 //            // To here
             return;
-        }
-
-        else if (a == Action.TURN_LEFT) {
+        } else if (a == Action.TURN_LEFT) {
             processTurn(t, Direction.LEFT);
             return;
         } else if (a == Action.TURN_RIGHT) {
@@ -339,7 +354,7 @@ public class ActionField extends JPanel {
             }
             if (bullet.isDestroyed() || (bullet.getX() > 580) || (bullet.getX() < -20) || (bullet.getY() > 580) || (bullet.getY() < -20)) {
                 bullets.remove(count);
-                bulletCount --;
+                bulletCount--;
             }
         }
     }
@@ -412,7 +427,8 @@ public class ActionField extends JPanel {
             e.printStackTrace();
         }
     }
-        // This method is for reading Action from file
+
+    // This method is for reading Action from file
     public Action checkAction(String command) {
         Action action = Action.NONE;
         if (command.equals("MOVE")) {
@@ -444,25 +460,6 @@ public class ActionField extends JPanel {
         }
     }
 
-    // ActionField constructor without parameter, ARRAY
-    public ActionField() throws Exception {
-        battleField = new BattleField();
-        defender = new T34(battleField);
-
-        String location = battleField.getAggressorLocation();
-        aggressor = new BT7(battleField,
-                Integer.parseInt(location.split("_")[1]), Integer.parseInt(location.split("_")[0]), Direction.RIGHT);
-
-//        bullet = new Bullet(-100, -100, Direction.NONE);
-//            JFrame frame = mainFrame;
-//        JFrame frame = new JFrame("BATTLE FIELD, DAY 7");
-//        frame.setLocation(750, 150);
-//        frame.setMinimumSize(new Dimension(battleField.getBfWidth(), battleField.getBfHeight() + 22));
-//        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        frame.getContentPane().add(this);
-//        frame.pack();
-//        frame.setVisible(true);
-    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -496,5 +493,9 @@ public class ActionField extends JPanel {
             bullets.get(j).draw(g);
         }
 
+    }
+
+    public BattleField getBattleField() {
+        return battleField;
     }
 }
