@@ -1,4 +1,5 @@
 package com.kademika.tanksGame.tanks;
+
 import com.kademika.tanksGame.Direction;
 import com.kademika.tanksGame.interfaces.Destroyable;
 import com.kademika.tanksGame.interfaces.Drawable;
@@ -7,14 +8,24 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 
-
 public class Bullet implements Drawable, Destroyable {
 
     private int speed = 5;
-
+    private int step = 1;
     private int x;
     private int y;
     private Direction direction;
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+
+        return count;
+    }
+
+    private int count = 0;
 
     private boolean destroyed;
 
@@ -41,7 +52,7 @@ public class Bullet implements Drawable, Destroyable {
         this.destroyed = false;
     }
 
-    public Bullet(int x, int y, Direction direction){
+    public Bullet(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
         this.direction = direction;
@@ -63,7 +74,10 @@ public class Bullet implements Drawable, Destroyable {
 
     @Override
     public boolean isDestroyed() {
+
         return destroyed;
+
+
     }
 
     public int getSpeed() {
@@ -89,4 +103,29 @@ public class Bullet implements Drawable, Destroyable {
             g.fillRect(this.x, this.y, 14, 14);
         }
     }
+
+//    @Override
+//    public void run() {
+//
+//
+//            while ((this.getX() > -14 && this.getX() < 590)
+//                    && (this.getY() > -14 && this.getY() < 590)) {
+//                try {
+//                if (this.getDirection() == Direction.UP) {
+//                    this.updateY(-step);
+//                } else if (this.getDirection() == Direction.DOWN) {
+//                    this.updateY(step);
+//                } else if (this.getDirection() == Direction.LEFT) {
+//                    this.updateX(-step);
+//                } else {
+//                    this.updateX(step);
+//                }
+//
+//                    Thread.sleep(this.getSpeed());
+////
+//            }catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//        }
+//    }
 }

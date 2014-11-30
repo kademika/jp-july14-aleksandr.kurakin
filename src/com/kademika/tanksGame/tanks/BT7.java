@@ -29,15 +29,19 @@ public class BT7 extends AbstractTank {
 
     private int step = 0;
     private Action[] actoins = new Action[]{
-            Action.TURN_DOWN,
+            Action.TURN_LEFT,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_RIGHT,
+//            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_LEFT,
             Action.FIRE,
             Action.MOVE,
             Action.TURN_RIGHT,
             Action.FIRE,
             Action.MOVE,
-            Action.TURN_LEFT,
-            Action.FIRE,
-            Action.MOVE
+            Action.TURN_RIGHT,
     };
 
 //    private int step = 0;
@@ -120,30 +124,30 @@ public class BT7 extends AbstractTank {
 //        return actions;
 //    }
 
-    public BFObject checkQuadrantFrontTank() {
-        BFObject frontObject = null;
-
-        int v = this.getY() / 64;
-        int h = this.getX() / 64;
-
-        if (this.getDirection() == Direction.RIGHT) {
-            return bf.scanQuadrant(v, h + 1);
-        }
-
-        if (this.getDirection() == Direction.DOWN) {
-            return bf.scanQuadrant(v + 1, h);
-        }
-
-        if (this.getDirection() == Direction.LEFT) {
-            frontObject = bf.scanQuadrant(v, h - 1);
-        }
-
-        if (this.getDirection() == Direction.UP) {
-            frontObject = bf.scanQuadrant(v - 1, h);
-        }
-
-        return frontObject;
-    }
+//    public BFObject checkQuadrantFrontTank() {
+//        BFObject frontObject = null;
+//
+//        int v = this.getY() / 64;
+//        int h = this.getX() / 64;
+//
+//        if (this.getDirection() == Direction.RIGHT) {
+//            return bf.scanQuadrant(v, h + 1);
+//        }
+//
+//        if (this.getDirection() == Direction.DOWN) {
+//            return bf.scanQuadrant(v + 1, h);
+//        }
+//
+//        if (this.getDirection() == Direction.LEFT) {
+//            frontObject = bf.scanQuadrant(v, h - 1);
+//        }
+//
+//        if (this.getDirection() == Direction.UP) {
+//            frontObject = bf.scanQuadrant(v - 1, h);
+//        }
+//
+//        return frontObject;
+//    }
     @Override
     public void destroy() {
         if (armor > 0) {

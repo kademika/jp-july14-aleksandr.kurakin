@@ -46,7 +46,40 @@ public abstract class AbstractTank implements Tank {
 
     @Override // Turn
     public void turn(Direction direction) {
-        this.direction = direction;
+        if (direction == Direction.RIGHT) {
+
+            if (this.direction == Direction.UP) {
+                this.direction = Direction.RIGHT;
+                return;
+            } else if (this.direction == Direction.RIGHT) {
+                this.direction = direction.DOWN;
+                return;
+            } else if (this.direction == Direction.DOWN) {
+                this.direction = Direction.LEFT;
+                return;
+            } else if (this.direction == Direction.LEFT) {
+                this.direction = Direction.UP;
+                return;
+            }
+            return;
+
+        } else if (direction == Direction.LEFT) {
+
+            if (this.direction == Direction.UP) {
+                this.direction = Direction.LEFT;
+                return;
+            } else if (this.direction == Direction.LEFT) {
+                this.direction = Direction.LEFT;
+                return;
+            } else if (this.direction == Direction.DOWN) {
+                this.direction = Direction.RIGHT;
+                return;
+            } else if (this.direction == Direction.RIGHT) {
+                this.direction = direction.UP;
+                return;
+            }
+        }
+//        this.direction = direction;
     }
 
 //    public void move() {
@@ -58,15 +91,15 @@ public abstract class AbstractTank implements Tank {
         int bulletY = -100;
         if (direction == Direction.UP) {
             bulletX = x + 25;
-            bulletY = y - 0;
+            bulletY = y - 14;
         } else if (direction == Direction.DOWN) {
             bulletX = x + 25;
-            bulletY = y + 64;
+            bulletY = y + 78;
         } else if (direction == Direction.LEFT) {
-            bulletX = x - 0;
+            bulletX = x - 14;
             bulletY = y + 25;
         } else if (direction == Direction.RIGHT) {
-            bulletX = x + 64;
+            bulletX = x + 78;
             bulletY = y + 25;
         }
         return new Bullet(bulletX, bulletY, direction);

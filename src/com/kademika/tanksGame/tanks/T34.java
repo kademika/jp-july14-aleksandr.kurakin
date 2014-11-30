@@ -25,15 +25,19 @@ public class T34 extends AbstractTank {
     }
 
     private Action[] actoins = new Action[]{
-            Action.TURN_UP,
+            Action.TURN_LEFT,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_RIGHT,
+//            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_LEFT,
             Action.FIRE,
             Action.MOVE,
             Action.TURN_RIGHT,
             Action.FIRE,
             Action.MOVE,
-            Action.TURN_LEFT,
-            Action.FIRE,
-            Action.MOVE
+            Action.TURN_RIGHT,
     };
 
     private int step = 0;
