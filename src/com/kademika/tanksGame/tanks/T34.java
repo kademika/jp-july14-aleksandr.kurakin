@@ -44,16 +44,12 @@ public class T34 extends AbstractTank {
 
     @Override
     public Action setUp() {
-        if (step >= actoins.length) {
-            step = 0;
-        }
-//        if (!(actoins[step] instanceof Action)) {
-//            turn((Direction) actoins[step++]);
-//        }
 //        if (step >= actoins.length) {
 //            step = 0;
 //        }
-        return actoins[step++];
+
+        return this.action;
+//                actoins[step++];
     }
 
     //need to overwrite all method, did not need yet
@@ -92,6 +88,8 @@ public class T34 extends AbstractTank {
 //        }
         return action;
     }
+
+
 
     public String getName(){
         return "T34";

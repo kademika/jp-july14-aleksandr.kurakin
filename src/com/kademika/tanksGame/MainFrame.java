@@ -2,35 +2,48 @@ package com.kademika.tanksGame;
 
 import com.kademika.shop.Customer;
 import com.kademika.shop.constants.Name;
+import com.kademika.tanksGame.tanks.*;
+import com.kademika.tanksGame.tanks.Action;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class MainFrame extends JFrame {
-    BattleField battleField;
+
     ActionField af;
     JFrame frame = new JFrame("Tanks");
 
-    public MainFrame(ActionField af) {
-
+    public void setAf(ActionField af) {
         this.af = af;
-        battleField = af.getBattleField();
+    }
+
+    public MainFrame() {
 
 
         frame.setLocation(650, 150);
-        frame.setMinimumSize(new Dimension(battleField.getBfWidth(), battleField.getBfHeight() + 22));
+        frame.setMinimumSize(new Dimension(576, 576 + 22));
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+//                af.setAction(e); // make link to chosen Tank and
+                af.getDefender().setAction(Action.MOVE);
+            }
+        });
+
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(startPanel());
         frame.pack();
         frame.setVisible(true);
     }
 
+
     public JPanel startPanel() {
 
-//        final JFrame frame1 = frame;
         JPanel sp = new JPanel();
         sp.setLayout(new GridBagLayout());
 
@@ -54,12 +67,10 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().removeAll();
-//                startPanel(frame).setVisible(false);
                 frame.getContentPane().add(af);
                 frame.revalidate();
                 frame.pack();
                 frame.setFocusable(true);
-//                frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 af.setVisible(true);
                 SwingWorker workerAF = new SwingWorker() {
                     @Override
@@ -67,14 +78,14 @@ public class MainFrame extends JFrame {
                         af.runTheGameMT();
                         return null;
                     }
-                }; workerAF.execute();
+                };
+                workerAF.execute();
             }
         });
 
         buttonExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                frame.cl
             }
 
         });
@@ -82,7 +93,7 @@ public class MainFrame extends JFrame {
         return sp;
     }
 
-    public JPanel gameOverPanel (){
+    public JPanel gameOverPanel() {
         JPanel gop = new JPanel();
         gop.setLayout(new GridBagLayout());
 

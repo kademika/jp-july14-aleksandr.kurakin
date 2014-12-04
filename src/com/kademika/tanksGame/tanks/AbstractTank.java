@@ -20,14 +20,16 @@ public abstract class AbstractTank implements Tank {
     protected int armor = 1;
     // 1 - up, 2 - down, 3 - left, 4 - right
     private Direction direction;
-
     // current position on BF
     private int x;
     private int y;
-
     private boolean destroyed;
-
     private BattleField bf;
+    Action action = Action.NONE;
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
 
     protected Color tankColor;
     protected Color towerColor;

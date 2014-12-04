@@ -8,7 +8,9 @@ public class Launcher {
 
 		ActionField af = new ActionField();
 
-        MainFrame mf = new MainFrame(af);
+        MainFrame mf = new MainFrame();
+        mf.setAf(af);
+        af.setMf(mf);
         //clear the history file
 //        af.clearHistory(new File("history.txt"));
 

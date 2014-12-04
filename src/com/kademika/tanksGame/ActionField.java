@@ -9,11 +9,19 @@ import com.kademika.tanksGame.tanks.Action;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.*;
 import java.util.List;
 
 public class ActionField extends JPanel {
+
+    private MainFrame mf;
+
+    public void setMf(MainFrame mf) {
+        this.mf = mf;
+    }
 
     private boolean COLORDED_MODE = false;
     private MainFrame frame;
@@ -25,6 +33,12 @@ public class ActionField extends JPanel {
     private int step = 1;
     private volatile int bulletCount = 0;
 
+    public void setDefenderAction(Action defenderAction) {
+        this.defenderAction = defenderAction;
+    }
+
+    Action defenderAction;
+
     // ActionField constructor without parameter, ARRAY
     public ActionField() throws Exception {
 //        this.frame = frame;
@@ -34,6 +48,8 @@ public class ActionField extends JPanel {
         String location = battleField.getAggressorLocation();
         aggressor = new BT7(battleField,
                 Integer.parseInt(location.split("_")[1]), Integer.parseInt(location.split("_")[0]), Direction.RIGHT);
+
+
 
 //        bullet = new Bullet(-100, -100, Direction.NONE);
 //            JFrame frame = mainFrame;
@@ -77,6 +93,56 @@ public class ActionField extends JPanel {
 
     }
 
+    public Tank getDefender() {
+        return defender;
+    }
+
+    void setAction(KeyEvent event){
+        if (event.getKeyCode() == KeyEvent.VK_SPACE){
+            System.out.println("Pressed UP1");
+        }
+//        Action action;
+        switch (event.getKeyCode()){
+            case KeyEvent.VK_UP:
+                System.out.println("Pressed UP");
+                defender.setAction(Action.MOVE);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                defender.setAction(Action.NONE);
+//                while (event.isShiftDown()){
+////                   Action  action = Action.MOVE;
+//                    try {
+//                        processAction(Action.MOVE, defender);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+            case KeyEvent.VK_RIGHT:
+                defenderAction = Action.TURN_RIGHT;
+//                try {
+//                    processAction(Action.TURN_RIGHT, defender);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+            case KeyEvent.VK_LEFT:
+                try {
+                    processAction(Action.TURN_LEFT, defender);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            case KeyEvent.VK_SPACE:
+
+                defender.setAction(Action.FIRE);
+//                try {
+//                    processAction(Action.FIRE,defender);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+        }
+    }
 
     // Run The Game With Writing in File: OK
     void runTheGameWithWriteToFile() throws Exception {
@@ -118,7 +184,8 @@ public class ActionField extends JPanel {
 
 //                    action = aggressor.setUp();
                     try {
-                        action = aggressor.setUp();
+                        action =
+                                aggressor.setUp();
                         processAction(action, aggressor);
                         Thread.sleep(500);
                     } catch (Exception e) {
@@ -138,7 +205,8 @@ public class ActionField extends JPanel {
                 Action action;
                 while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
 
-//                    action = defender.setUp();
+
+
                     try {
                         action = defender.setUp();
                         processAction(action, defender);
@@ -153,53 +221,6 @@ public class ActionField extends JPanel {
         }).start();
     }
 
-//    private void bulletsAction() {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    for (int i = 0; i < bullets.size(); i++) {
-//                        Bullet currentBullet = bullets.get(i);
-//                        if (currentBullet != null) {
-//
-//                            while ((currentBullet.getX() > -14) && (currentBullet.getX() < 590)
-//                                    && (currentBullet.getY() > -14) && (currentBullet.getY() < 590)) {
-//                                if (currentBullet.getDirection() == Direction.UP) {
-//                                    currentBullet.updateY(-step);
-//                                } else if (currentBullet.getDirection() == Direction.DOWN) {
-//                                    currentBullet.updateY(step);
-//                                } else if (currentBullet.getDirection() == Direction.LEFT) {
-//                                    currentBullet.updateX(-step);
-//                                } else {
-//                                    currentBullet.updateX(step);
-//                                }
-//                                if (processInterception(bu)) {
-//                                    currentBullet.destroy();
-//                                }
-//                                repaint();
-//                                try {
-//                                    Thread.sleep(currentBullet.getSpeed());
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                if (currentBullet.isDestroyed()) {
-//                                    bullets.remove(currentBullet);
-//
-//                                }
-//                            }
-//                        }
-//                        repaint();
-//                        try {
-////                        processFire();
-//                            Thread.sleep(10);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        }).start();
-//    }
 
     private void screenUpdate() {
         new Thread(new Runnable() {
@@ -240,7 +261,7 @@ public class ActionField extends JPanel {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    writeToFile(Action.FIRE, aggressor);
+//                    writeToFile(Action.FIRE, aggressor);
                 }
             }).start();
 //            // To here
@@ -251,7 +272,7 @@ public class ActionField extends JPanel {
         } else if (a == Action.TURN_RIGHT) {
             processTurn(t, Direction.RIGHT);
         }
-        writeToFile(a, t);
+//        writeToFile(a, t);
     }
 
     // Process Turn

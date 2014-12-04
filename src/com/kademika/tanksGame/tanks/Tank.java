@@ -36,4 +36,6 @@ public interface Tank extends Drawable, Destroyable {
 
     public void setICanMoveForward(Boolean tankCanMove);
 
+    public void setAction(Action action);
+
 }
