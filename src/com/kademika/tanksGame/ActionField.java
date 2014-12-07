@@ -17,10 +17,8 @@ import java.util.List;
 
 public class ActionField extends JPanel {
 
-    private MainFrame mf;
-
     public void setMf(MainFrame mf) {
-        this.mf = mf;
+        this.frame = mf;
     }
 
     private boolean COLORDED_MODE = false;
@@ -41,7 +39,7 @@ public class ActionField extends JPanel {
 
     // ActionField constructor without parameter, ARRAY
     public ActionField() throws Exception {
-//        this.frame = frame;
+
         battleField = new BattleField();
         defender = new T34(battleField);
 
@@ -50,16 +48,6 @@ public class ActionField extends JPanel {
                 Integer.parseInt(location.split("_")[1]), Integer.parseInt(location.split("_")[0]), Direction.RIGHT);
 
 
-
-//        bullet = new Bullet(-100, -100, Direction.NONE);
-//            JFrame frame = mainFrame;
-//        JFrame frame = new JFrame("BATTLE FIELD, DAY 7");
-//        frame.setLocation(750, 150);
-//        frame.setMinimumSize(new Dimension(battleField.getBfWidth(), battleField.getBfHeight() + 22));
-//        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        frame.getContentPane().add(this);
-//        frame.pack();
-//        frame.setVisible(true);
     }
 
     /**
@@ -97,11 +85,16 @@ public class ActionField extends JPanel {
         return defender;
     }
 
-    void setAction(KeyEvent event){
-        if (event.getKeyCode() == KeyEvent.VK_SPACE){
-            System.out.println("Pressed UP1");
-        }
-//        Action action;
+    void setAction(KeyEvent event) {
+//        if (event.getKeyCode() == KeyEvent.VK_SPACE) {
+//            try {
+//                processAction(Action.FIRE, defender);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println("Pressed UP1");
+//        }
+        Action action;
         switch (event.getKeyCode()){
             case KeyEvent.VK_UP:
                 System.out.println("Pressed UP");
@@ -111,36 +104,45 @@ public class ActionField extends JPanel {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+//                try {
+//                    processAction(Action.MOVE, defender);
+//                    Thread.sleep(500);
+//                }  catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 defender.setAction(Action.NONE);
 //                while (event.isShiftDown()){
-////                   Action  action = Action.MOVE;
+//                   Action  action = Action.MOVE;
+
 //                    try {
 //                        processAction(Action.MOVE, defender);
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
-//                    }
 //                }
+                break;
             case KeyEvent.VK_RIGHT:
-                defenderAction = Action.TURN_RIGHT;
-//                try {
-//                    processAction(Action.TURN_RIGHT, defender);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+//                defenderAction = Action.TURN_RIGHT;
+                try {
+                    processAction(Action.TURN_RIGHT, defender);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             case KeyEvent.VK_LEFT:
                 try {
                     processAction(Action.TURN_LEFT, defender);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                break;
             case KeyEvent.VK_SPACE:
 
-                defender.setAction(Action.FIRE);
-//                try {
-//                    processAction(Action.FIRE,defender);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+//                defender.setAction(Action.FIRE);
+                try {
+                    processAction(Action.FIRE,defender);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
     }
 
@@ -170,7 +172,6 @@ public class ActionField extends JPanel {
 
         aggressorAction();
         defenderAction();
-//        bulletsAction();
         screenUpdate();
     }
 
@@ -180,18 +181,15 @@ public class ActionField extends JPanel {
             public void run() {
                 Action action;
                 while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
-
-
-//                    action = aggressor.setUp();
+                    action = aggressor.setUp();
                     try {
-                        action =
-                                aggressor.setUp();
+
                         processAction(action, aggressor);
                         Thread.sleep(500);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-//                        writeToFile(action, aggressor);
+                        writeToFile(action, aggressor);
                 }
                 frame.gameOverPanel();
             }
@@ -200,17 +198,17 @@ public class ActionField extends JPanel {
 
     private void defenderAction() {
         new Thread(new Runnable() {
+            Action action;
+
             @Override
             public void run() {
-                Action action;
+
                 while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
 
-
-
                     try {
-                        action = defender.setUp();
-                        processAction(action, defender);
-                        Thread.sleep(500);
+//                        action = defender.getAction();
+                        processAction(defender.getAction(), defender);
+//                        Thread.sleep(500);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -373,11 +371,13 @@ public class ActionField extends JPanel {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (bullet.isDestroyed() || (bullet.getX() > 580) || (bullet.getX() < -20) || (bullet.getY() > 580) || (bullet.getY() < -20)) {
-                bullets.remove(count);
-                bulletCount--;
-            }
+//            if (bullet.isDestroyed() || (bullet.getX() > 580) || (bullet.getX() < -20) || (bullet.getY() > 580) || (bullet.getY() < -20)) {
+//                bullets.remove(count);
+//                bulletCount--;
+//            }
         }
+        bullets.remove(count);
+        bulletCount--;
     }
 
     // Process interception, ARRAY
@@ -392,21 +392,21 @@ public class ActionField extends JPanel {
             BFObject bfObject = battleField.scanQuadrant(v, h);
             if (!bfObject.isDestroyed() && !(bfObject instanceof Blank) && !(bfObject instanceof Water)) {
                 battleField.destroyObject(v, h);
-//                bullets.remove(bullet);
+                bullets.remove(bullet);
                 return true;
             }
 
             // check aggressor
             if (!aggressor.isDestroyed() && checkInterception(getQuadrant(aggressor.getX(), aggressor.getY()), bulletCoordinates)) {
                 aggressor.destroy();
-//                bullets.remove(bullet);
+                bullets.remove(bullet);
                 return true;
             }
 
             // check defender
             if (!defender.isDestroyed() && checkInterception(getQuadrant(defender.getX(), defender.getY()), bulletCoordinates)) {
                 defender.destroy();
-//                bullets.remove(bullet);
+                bullets.remove(bullet);
                 return true;
             }
         }
@@ -481,7 +481,6 @@ public class ActionField extends JPanel {
         }
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
 
@@ -516,7 +515,4 @@ public class ActionField extends JPanel {
 
     }
 
-    public BattleField getBattleField() {
-        return battleField;
-    }
 }

@@ -38,4 +38,5 @@ public interface Tank extends Drawable, Destroyable {
 
     public void setAction(Action action);
 
+    Action getAction();
 }

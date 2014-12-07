@@ -14,33 +14,48 @@ import java.awt.event.KeyEvent;
 
 
 public class MainFrame extends JFrame {
-
     ActionField af;
-    JFrame frame = new JFrame("Tanks");
 
-    public void setAf(ActionField af) {
-        this.af = af;
-    }
+    public MainFrame() throws Exception {
 
-    public MainFrame() {
-
-
-        frame.setLocation(650, 150);
-        frame.setMinimumSize(new Dimension(576, 576 + 22));
-        frame.addKeyListener(new KeyAdapter() {
+        af = new ActionField();
+        af.setMf(this);
+        this.setLocation(650, 150);
+        this.setMinimumSize(new Dimension(576, 576 + 22));
+        this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-//                af.setAction(e); // make link to chosen Tank and
-                af.getDefender().setAction(Action.MOVE);
+                af.setAction(e);
+                System.out.println("Pressed from MF");
             }
         });
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setTitle("Tanks");
+        this.getContentPane().add(startPanel());
+        this.pack();
+        this.setVisible(true);
+        this.setFocusable(true);
 
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.getContentPane().add(startPanel());
-        frame.pack();
-        frame.setVisible(true);
     }
 
+    public void loadAF() {
+        this.getContentPane().removeAll();
+        this.getContentPane().add(af);
+        this.revalidate();
+        this.pack();
+        af.setVisible(true);
+
+//                SwingWorker workerAF = new SwingWorker() {
+//                    @Override
+//                    protected Object doInBackground() throws Exception {
+
+        try {
+            af.runTheGameMT();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+
+    }
 
     public JPanel startPanel() {
 
@@ -66,20 +81,7 @@ public class MainFrame extends JFrame {
         buttonStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.getContentPane().removeAll();
-                frame.getContentPane().add(af);
-                frame.revalidate();
-                frame.pack();
-                frame.setFocusable(true);
-                af.setVisible(true);
-                SwingWorker workerAF = new SwingWorker() {
-                    @Override
-                    protected Object doInBackground() throws Exception {
-                        af.runTheGameMT();
-                        return null;
-                    }
-                };
-                workerAF.execute();
+                loadAF();
             }
         });
 
@@ -113,12 +115,10 @@ public class MainFrame extends JFrame {
 
         });
 
-        frame.getContentPane().removeAll();
-        frame.getContentPane().add(gop);
-        frame.getContentPane().add(af);
-        frame.revalidate();
-        frame.pack();
-        frame.setFocusable(true);
+        this.getContentPane().removeAll();
+        this.getContentPane().add(gop);
+        this.revalidate();
+        this.pack();
         gop.setVisible(true);
 
         return gop;

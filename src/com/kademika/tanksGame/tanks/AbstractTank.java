@@ -31,6 +31,10 @@ public abstract class AbstractTank implements Tank {
         this.action = action;
     }
 
+    public Action getAction(){
+        return action;
+    }
+
     protected Color tankColor;
     protected Color towerColor;
 

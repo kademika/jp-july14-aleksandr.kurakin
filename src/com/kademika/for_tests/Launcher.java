@@ -5,6 +5,7 @@ package com.kademika.for_tests;
  */
 public class Launcher {
     public static void main(String[] args) {
-        TestsForKeyListener testsForKeyListener = new TestsForKeyListener();
+//        TestsForKeyListener testsForKeyListener = new TestsForKeyListener();
+        FrameM frameM = new FrameM();
     }
 }
