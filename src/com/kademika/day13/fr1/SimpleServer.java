@@ -30,7 +30,7 @@ public class SimpleServer {
 
     public static int transmogrify(int data) {
         if (Character.isLetter(data)) {
-            return data;
+            return  data ^ ' ';
         }
         return data;
     }
