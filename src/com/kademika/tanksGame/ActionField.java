@@ -342,8 +342,6 @@ public class ActionField extends JPanel {
                 bulletCount--;
             }
         }
-//        bullets.remove(count);
-//        bulletCount--;
     }
 
     // Process interception, ARRAY

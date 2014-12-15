@@ -1,4 +1,4 @@
-package com.kademika.day13.fr1;
+package com.kademika.day13.fr1_6;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,12 +25,12 @@ public class SimpleServer {
                 }
             }
         }
-
     }
+
 
     public static int transmogrify(int data) {
         if (Character.isLetter(data)) {
-            return  data ^ ' ';
+            return data ^ ' ';
         }
         return data;
     }
