@@ -1,47 +1,85 @@
 package com.kademika.shop;
 
 import com.kademika.shop.constants.Name;
-import com.kademika.shop.constants.Type;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.ImageObserver;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.util.*;
 import java.util.List;
 
 public class Shop {
-	private Storages strg;
+    static private Storages strg;
+    Purchase prchs;
+    Customer cstmr;
 
+    public static void startServer() throws IOException {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
 
-	public Shop() {
-		strg = new Storages();
+                        ServerSocket ss = new ServerSocket(8080);
+                        Socket socket = ss.accept();
 
-	}
-	
-	public void insertBird (Bird bird){
-		strg.insertBird(bird);
-	}
-
-	public void makePurchase(String customerName, Name birdName, int number) {  // добавить проверку на остаток птиц на складе!!!
-        int count =0;
-        System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
-//        if(!)
-		Purchase prchs = new Purchase (customerName,birdName, number);
-		for (int i = 0; i < number; i++){
-            Bird tmpBrd = strg.getBird(birdName);
-//            int count =0;
-            if(tmpBrd != null) {
-                prchs.addBirdToPurchase(tmpBrd);
-                count ++;
+                        try (
+                                ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
+                                ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+                        ) {
+                            if (serverIn.readChar() == 0) {
+                                System.out.println("Server got request for list of customers from client = 3");
+                                List<Customer> cstmrList = strg.getAllCustomers();
+                                serverOut.writeChar(1);
+                                for (int i = 0; i < cstmrList.size(); i++) {
+                                    serverOut.writeObject(cstmrList.get(i));
+                                }
+                                serverOut.writeChar(2);
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-		}
-		strg.insertPurchase(prchs);
+        }).start();
+
+    }
+
+    public Shop() throws IOException {
+        strg = new Storages();
+        startServer();
+    }
+
+    public void insertBird(Bird bird) {
+        strg.insertBird(bird);
+    }
+
+    public void makePurchase(String customerName, Name birdName, int number) {
+        int count = 0;
+        System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
+        if (number <= strg.getBirdBalance(birdName)) {
+            prchs = new Purchase(customerName, birdName, number);
+            for (int i = 0; i < number; i++) {
+                Bird tmpBrd = strg.getBird(birdName);
+//            int count =0;
+                if (tmpBrd != null) {
+                    prchs.addBirdToPurchase(tmpBrd);
+                    count++;
+                }
+            }
+        } else
+            System.out.println("There are only " + strg.getBirdBalance(birdName) + " " + birdName + " in storage, please, " +
+                    "enter new Quantity - less then " + strg.getBirdBalance(birdName));
+
+        strg.insertPurchase(prchs);
+        cstmr = new Customer();
+        cstmr.setName(customerName);
+        strg.insertCustomer(cstmr);
         System.out.println(customerName + " bout " + count + " " + birdName + "s.");
         System.out.println("New balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
 
     }
-	// methods to get reports
+    // methods to get reports
 //	public void getPriceList(){		//show price list
 //		System.out.println("Price list: ");
 //		for(int i = 0; i < Name.values().length; i++){
@@ -50,7 +88,7 @@ public class Shop {
 //			} else System.out.println(Name.values()[i] + " price is: " + strg.birdInStorage(Name.values()[i], 0).getPrice());
 //		}
 //	}
-	
+
 //	public void getBirdsInStock (){	// ostatki na sklade
 //		System.out.println("We have next birds in our shop:");
 //		int sum;
@@ -65,7 +103,7 @@ public class Shop {
 //			System.out.println(Name.values()[i] + " in stock: " + sum);
 //		}
 //	}
-	
+
 //	public void getLast7daysTransactions(){		//printing
 //		int today = 0;
 //		int oneDayAgo = 0;
@@ -92,8 +130,8 @@ public class Shop {
 //		System.out.println("Last seven days, from today: "
 //		+ today +", "+ oneDayAgo +", "+ twoDaysAgo +", "+ threeDaysAgo +", "+ fourDaysAgo +", "+ fiveDaysAgo +", "+ sixDaysAgo);
 //	}
-	
-	// transactions today
+
+    // transactions today
 //	public void getTodayTransactions(){
 //		System.out.println("№   Customer    Bird   Price   Amount");
 //		System.out.println("_____________________________________");
@@ -112,15 +150,22 @@ public class Shop {
 //		}
 //		System.out.println("Totaly: "+ n + " purchases  "+ priceTotal + "  " + amountTotal);
 //	}
-	
-	// Catalog with categories
-	public Name[]  getCatalog (){
+
+    // Get customers
+    public List<Customer> getCustomers() {
+        List customers = new ArrayList();
+        customers = strg.getCustomers();
+        return customers;
+    }
+
+    // Catalog with categories
+    public Name[] getCatalog() {
         int catalogLength = Name.values().length;
-        Name[] catalog = new Name [catalogLength];
-        for (int i = 0; i<Name.values().length; i++){
-        catalog[i] = Name.values()[i];
+        Name[] catalog = new Name[catalogLength];
+        for (int i = 0; i < Name.values().length; i++) {
+            catalog[i] = Name.values()[i];
         }
 
         return catalog;
-	}
+    }
 }
