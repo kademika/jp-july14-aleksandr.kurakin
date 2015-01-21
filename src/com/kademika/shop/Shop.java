@@ -1,6 +1,7 @@
 package com.kademika.shop;
 
 import com.kademika.shop.constants.Name;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,34 +13,42 @@ public class Shop {
     Purchase prchs;
     Customer cstmr;
 
+
     public static void startServer() throws IOException {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    try {
 
-                        ServerSocket ss = new ServerSocket(8080);
-                        Socket socket = ss.accept();
+                try {
 
-                        try (
-                                ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
-                                ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
-                        ) {
-                            if (serverIn.readChar() == 0) {
-                                System.out.println("Server got request for list of customers from client = 3");
-                                List<Customer> cstmrList = strg.getAllCustomers();
-                                serverOut.writeChar(1);
-                                for (int i = 0; i < cstmrList.size(); i++) {
-                                    serverOut.writeObject(cstmrList.get(i));
-                                }
-                                serverOut.writeChar(2);
+                    ServerSocket ss = new ServerSocket(8080);
+                    Socket socket = ss.accept();
+
+
+                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
+                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+
+                    while (true) {
+                        Character start = serverIn.readChar();
+                        if (start == 0) {
+                            System.out.println("Server got request for list of customers from client = 0");
+                            List<Customer> cstmrList = strg.getAllCustomers();
+                            int collectionSize = cstmrList.size();
+                            serverOut.writeInt(collectionSize);
+//                            serverOut.flush(); //??
+                            for (int i = 0; i < collectionSize; i++) {
+                                serverOut.writeObject(cstmrList.get(i));
                             }
+
+                            System.out.println("Data transfer complete");
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
+//                    serverOut.flush(); //??
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
             }
         }).start();
 
