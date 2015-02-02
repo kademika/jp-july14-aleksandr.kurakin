@@ -24,8 +24,7 @@ public class Shop {
 
                     ServerSocket ss = new ServerSocket(8080);
                     Socket socket = ss.accept();
-
-
+//                    while (true) {
                     ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
 
@@ -36,19 +35,15 @@ public class Shop {
                             List<Customer> cstmrList = strg.getAllCustomers();
                             int collectionSize = cstmrList.size();
                             serverOut.writeInt(collectionSize);
-//                            serverOut.flush(); //??
                             for (int i = 0; i < collectionSize; i++) {
                                 serverOut.writeObject(cstmrList.get(i));
                             }
-
                             System.out.println("Data transfer complete");
                         }
                     }
-//                    serverOut.flush(); //??
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         }).start();
 
