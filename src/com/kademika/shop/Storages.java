@@ -10,7 +10,8 @@ import java.util.List;
 
 // Storages hranit infomatciu o tovarah, pokupatel'ah i pokupkah, eto interface k BD
 public class Storages {
-private DBConnection dbConnection;
+
+//    private DBConnection dbConnection;
     private CustomerStorage customerStorage;
     private PurchaseStorage prchsStrg;
     private BirdStorage birdStorage;
@@ -58,7 +59,6 @@ private DBConnection dbConnection;
 
     //rabotaem s pokupkoy, zdes' est vozmognost' tol'ko dobavleniya, povtorno pokupateli ne dobavliautsa - zamenit' na druguu collection
     public void insertPurchase(Purchase prchs) {
-        //проверка наличия такого же покупателя - если нет - добавляем
 
 //        Statement statement = dbConnection.getStatement();
 
@@ -89,6 +89,10 @@ private DBConnection dbConnection;
                     quantity +  ");";
 
             statement.execute(prchsUpdate);
+
+            String birdsUpdate = "update bird_storage set quantity = quantity - " + quantity + " where type_name = '" + prchs.getName().toString() + "';";
+
+            statement.execute(birdsUpdate);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
