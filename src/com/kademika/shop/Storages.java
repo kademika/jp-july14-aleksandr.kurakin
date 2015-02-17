@@ -3,17 +3,24 @@ package com.kademika.shop;
 import com.kademika.shop.constants.Name;
 import com.kademika.shop.Bird;
 
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-// Storages hranit infomatciu o tovarah, pokupatel'ah i pokupkah
+// Storages hranit infomatciu o tovarah, pokupatel'ah i pokupkah, eto interface k BD
 public class Storages {
-
+private DBConnection dbConnection;
     private CustomerStorage customerStorage;
     private PurchaseStorage prchsStrg;
     private BirdStorage birdStorage;
+    private static String URL = "jdbc:mysql://localhost:3306/My_first_DB";
+    private static String USER = "root";
+    private static String PASS = "";
+    public static Statement statement;
 
     public Storages() {
+//        dbConnection = new DBConnection();
         birdStorage = new BirdStorage();
         customerStorage = new CustomerStorage();
         prchsStrg = new PurchaseStorage();
@@ -49,11 +56,44 @@ public class Storages {
         return birdStorage.getBirdBalance(name);
     }
 
-    //rabotaem s pokupatelem, zdes' est vozmognost' tol'ko dobavleniya, povtorno pokupateli ne dobavliautsa - zamenit' na druguu collection
+    //rabotaem s pokupkoy, zdes' est vozmognost' tol'ko dobavleniya, povtorno pokupateli ne dobavliautsa - zamenit' na druguu collection
     public void insertPurchase(Purchase prchs) {
         //проверка наличия такого же покупателя - если нет - добавляем
 
-        prchsStrg.add(prchs);
+//        Statement statement = dbConnection.getStatement();
+
+        int quantity = prchs.getNumberOfBirds();
+//        Date timeOfPurchase = prchs.getPurchaseTime();
+        int customerID = 0;
+        int birdId = 0;
+
+        String birdIDQuery = "select * from bird_storage where type_name = '" + prchs.getName().toString() + "';";
+        String customerIDQuery = "select * from customers where name = '" + prchs.getCustomer() + "';";
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(URL, USER, PASS);
+            System.out.println("Connected.");
+            statement = con.createStatement();
+            System.out.println("Statement created.");
+            ResultSet rsBirdID = statement.executeQuery(birdIDQuery);
+            if (rsBirdID.next()) {
+                birdId = rsBirdID.getInt("birdID");
+            }
+            System.out.println(birdId);
+            ResultSet rsCustomerID = statement.executeQuery(customerIDQuery);
+            if(rsCustomerID.next()) {
+                customerID = rsCustomerID.getInt("customersID");
+            }
+            String prchsUpdate = "insert into purchases (customerID, birdID, quantity) values (" + customerID + ", " + birdId + ", " +
+                    quantity +  ");";
+
+            statement.execute(prchsUpdate);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+//        prchsStrg.add(prchs);
     }
 
     // получаем список покупателей
@@ -65,6 +105,16 @@ public class Storages {
     // rabotaem s pticami (tovar)
     // dibavlenie novoi pticy v hranilische
     public void insertBird(Bird bird) {
+//        Statement statement = dbConnection.getStatement();
+//        String type_name = bird.getName().toString();
+//        double price = bird.getPrice();
+//        int quantity = 1;
+//        try {
+//            statement.execute("insert ");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
 
         birdStorage.add(bird);
     }

@@ -14,50 +14,53 @@ public class Shop {
     Customer cstmr;
 
 
-    public static void startServer() throws IOException {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-
-                    ServerSocket ss = new ServerSocket(8080);
-                    Socket socket = ss.accept();
+//    public static void startServer() throws IOException {
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                try {
+//
+//                    ServerSocket ss = new ServerSocket(8080);
+//                    Socket socket = ss.accept();
+//
+//                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
+//                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+//
 //                    while (true) {
-                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
-                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
-
-                    while (true) {
-                        Character start = serverIn.readChar();
-                        if (start == 0) {
-                            System.out.println("Server got request for list of customers from client = 0");
-                            List<Customer> cstmrList = strg.getAllCustomers();
-                            int collectionSize = cstmrList.size();
-                            serverOut.writeInt(collectionSize);
-                            for (int i = 0; i < collectionSize; i++) {
-                                serverOut.writeObject(cstmrList.get(i));
-                            }
-                            System.out.println("Data transfer complete");
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-    }
+//                        Character start = serverIn.readChar();
+//                        if (start == 0) {
+//                            System.out.println("Server got request for list of customers from client = 0");
+//                            List<Customer> cstmrList = strg.getAllCustomers();
+//                            int collectionSize = cstmrList.size();
+//                            serverOut.writeInt(collectionSize);
+//                            for (int i = 0; i < collectionSize; i++) {
+//                                serverOut.writeObject(cstmrList.get(i));
+//                            }
+//                            System.out.println("Data transfer complete");
+//                            serverOut.flush();
+//                        }
+//                    }
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//
+//    }
 
     public Shop() throws IOException {
         strg = new Storages();
-        startServer();
+//        startServer();
     }
 
     public void insertBird(Bird bird) {
         strg.insertBird(bird);
     }
 
+    //refactor with bd
     public void makePurchase(String customerName, Name birdName, int number) {
         int count = 0;
         System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));

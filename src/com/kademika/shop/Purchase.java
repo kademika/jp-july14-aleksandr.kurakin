@@ -1,21 +1,21 @@
 package com.kademika.shop;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import com.kademika.shop.constants.Name;
 
 public class Purchase {
 	private int numberOfBirds;
+    private Name name;
 	private String customerName;
-	private int purchaseTime;
+	private Date purchaseTime;
 	List <Bird> prchs = new ArrayList();
 
 	public Purchase(String customerName, Name name, int number) {
 		this.customerName = customerName;
+        this.name = name;
 		Random r = new Random();
-		this.purchaseTime = r.nextInt(6);
+		this.purchaseTime = new Date(Calendar.getInstance().getTimeInMillis());
 //		prchs = new Bird[number];
 		this.numberOfBirds = number;
 	}
@@ -28,7 +28,7 @@ public class Purchase {
 		return customerName;
 	}
 
-	public int getPurchaseTime() {
+	public Date getPurchaseTime() {
 		return purchaseTime;
 	}
 
@@ -39,4 +39,8 @@ public class Purchase {
 	public int getNumberOfBirds(){
 		return numberOfBirds;
 	}
+
+    public Name getName() {
+        return name;
+    }
 }

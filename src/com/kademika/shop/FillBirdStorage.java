@@ -7,8 +7,8 @@ import com.kademika.shop.constants.Name;
  */
 public class FillBirdStorage {
     Shop shop;
-    public FillBirdStorage(Shop shop){
-        this.shop = shop;
+    public static void fillBirdStorage(Shop shop){
+
         shop.insertBird(new Bird(Name.CHICKEN, 6.1));
         shop.insertBird(new Bird(Name.CANARY, 10.3));
         shop.insertBird(new Bird(Name.DUCK, 8.0));
