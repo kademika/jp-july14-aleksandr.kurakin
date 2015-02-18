@@ -14,78 +14,68 @@ public class Shop {
     Customer cstmr;
 
 
-//    public static void startServer() throws IOException {
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                try {
-//
-//                    ServerSocket ss = new ServerSocket(8080);
-//                    Socket socket = ss.accept();
-//
-//                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
-//                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
-//
-//                    while (true) {
-//                        Character start = serverIn.readChar();
-//                        if (start == 0) {
-//                            System.out.println("Server got request for list of customers from client = 0");
-//                            List<Customer> cstmrList = strg.getAllCustomers();
-//                            int collectionSize = cstmrList.size();
-//                            serverOut.writeInt(collectionSize);
-//                            for (int i = 0; i < collectionSize; i++) {
-//                                serverOut.writeObject(cstmrList.get(i));
-//                            }
-//                            System.out.println("Data transfer complete");
-//                            serverOut.flush();
-//                        }
-//                    }
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//
-//    }
+    public static void startServer() throws IOException {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+
+                    ServerSocket ss = new ServerSocket(8080);
+                    Socket socket = ss.accept();
+
+                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
+                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+
+                    while (true) {
+                        Character start = serverIn.readChar();
+                        if (start == 0) {
+                            System.out.println("Server got request for list of customers from client = 0");
+                            List<Customer> cstmrList = strg.getCustomers();
+                            int collectionSize = cstmrList.size();
+                            serverOut.writeInt(collectionSize);
+                            for (int i = 0; i < collectionSize; i++) {
+                                serverOut.writeObject(cstmrList.get(i));
+                            }
+                            System.out.println("Data transfer complete");
+                            serverOut.flush();
+                        }
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
 
     public Shop() throws IOException {
         strg = new Storages();
-//        startServer();
+        startServer();
     }
 
-    public void insertBird(Bird bird) {
-        strg.insertBird(bird);
-    }
-
-    //refactor with bd
+    //OK
     public void makePurchase(String customerName, Name birdName, int number) {
-        int count = 0;
-        System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
-        if (number <= strg.getBirdBalance(birdName)) {
-            prchs = new Purchase(customerName, birdName, number);
-            for (int i = 0; i < number; i++) {
-                Bird tmpBrd = strg.getBird(birdName);
-//            int count =0;
-                if (tmpBrd != null) {
-                    prchs.addBirdToPurchase(tmpBrd);
-                    count++;
-                }
-            }
-        } else
-            System.out.println("There are only " + strg.getBirdBalance(birdName) + " " + birdName + " in storage, please, " +
-                    "enter new Quantity - less then " + strg.getBirdBalance(birdName));
 
-        strg.insertPurchase(prchs);
-        cstmr = new Customer();
-        cstmr.setName(customerName);
-        strg.insertCustomer(cstmr);
-        System.out.println(customerName + " bout " + count + " " + birdName + "s.");
-        System.out.println("New balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
+        System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
+        int actualBirdBalance = strg.getBirdBalance(birdName);
+        if (number <= actualBirdBalance) {
+            prchs = new Purchase(customerName, birdName, number);
+            strg.addPurchase(prchs);
+            cstmr = new Customer();
+            cstmr.setName(customerName);
+            strg.addCustomer(cstmr);
+            System.out.println(customerName + " bout " + number + " " + birdName + "s.");
+            System.out.println("New balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
+        } else
+            System.out.println("There are only " + actualBirdBalance + " " + birdName + " in storage, please, " +
+                    "enter new Quantity - less then " + actualBirdBalance);
+
 
     }
+
     // methods to get reports
 //	public void getPriceList(){		//show price list
 //		System.out.println("Price list: ");

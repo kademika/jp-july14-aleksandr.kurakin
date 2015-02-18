@@ -9,7 +9,7 @@ public class Launcher {
 
     public static void main(String[] args) throws IOException {
         Shop shop = new Shop();
-        FillBirdStorage.fillBirdStorage(shop);
+//        FillBirdStorage.fillBirdStorage(shop);
 
         UserInterface shopUI = new UserInterface(shop);
 

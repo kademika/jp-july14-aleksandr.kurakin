@@ -32,6 +32,7 @@ public class SimpleClient {
     }
 
     public static void printCustomers(List<Customer> customers) {
+        System.out.println("--------------");
         for (int i = 0; i < customers.size(); i++) {
             System.out.println(customers.get(i).getName());
         }
