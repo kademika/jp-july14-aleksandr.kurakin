@@ -1,10 +1,11 @@
 package com.kademika.shop;
 
+import java.io.Serializable;
 import java.util.*;
 
 import com.kademika.shop.constants.Name;
 
-public class Purchase {
+public class Purchase implements Serializable{
 	private int numberOfBirds;
     private Name name;
 	private String customerName;

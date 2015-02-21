@@ -1,14 +1,11 @@
 package com.kademika.shop;
 
 import com.kademika.shop.constants.Name;
-
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-// Storages hranit infomatciu o tovarah, pokupatel'ah i pokupkah, eto interface k BD
 public class Storages {
 
     private Statement statement;
@@ -71,7 +68,6 @@ public class Storages {
 //        customerStorage.add(customer);
     }
 
-// OK
     public int getBirdBalance(Name name) {
         int birdQuantity = 0;
         String birdBalanceQuery = "select * from bird_storage where type_name = '" + name.toString() + "';";
@@ -88,7 +84,6 @@ public class Storages {
 //        return birdStorage.getBirdBalance(name);
     }
 
-    //OK
     public void addPurchase(Purchase prchs) {
 
 //        Statement statement = dbConnection.getStatement();

@@ -6,13 +6,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.NumberFormat;
 
 public class UserInterface  {
-    private Shop shop;
+//    private Shop shop;
+    SimpleClient client;
 
-    public UserInterface(Shop shop){
-        this.shop = shop;
+
+    public UserInterface(){
+
+        client = new SimpleClient();
+        try {
+            client.startClient();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         JFrame f = new JFrame("Welcome to our shop.");
         f.setLocation(300, 100);
@@ -23,6 +34,8 @@ public class UserInterface  {
         f.pack();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
+
+// here we can start our Client
 
     }
 
@@ -36,7 +49,8 @@ public class UserInterface  {
         panel.add(lName, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         panel.add(tName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, 0, new Insets(0, 0, 0, 0), 0, 0));
 
-        Name [] items =  shop.getCatalog();
+        Name [] items =  client.getCatalog();
+//                {Name.CHICKEN, Name.DUCK, Name.EAGLE, Name.OWL, Name.PARROT, Name.CANARY};
         JLabel lProduct = new JLabel("Select bird: ");
         final JComboBox patternList = new JComboBox(items);
 
@@ -63,7 +77,8 @@ public class UserInterface  {
 
                 int qnt = Integer.parseInt(tlQuantity.getText());
                 Name birdName = (Name) patternList.getSelectedItem();
-                shop.makePurchase(c.getName(), birdName, qnt);
+                Purchase prchs = new Purchase(c.getName(),birdName, qnt); // then transfer this Purchase with network to the shop
+                client.makePurchase(prchs);
             }
         });
 

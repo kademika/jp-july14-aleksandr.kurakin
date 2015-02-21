@@ -1,59 +1,92 @@
 package com.kademika.shop;
 
 import com.kademika.shop.constants.Name;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Shop {
     static private Storages strg;
     Purchase prchs;
     Customer cstmr;
+    ShopServer ss;
 
 
-    public static void startServer() throws IOException {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-
-                    ServerSocket ss = new ServerSocket(8080);
-                    Socket socket = ss.accept();
-
-                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
-                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
-
-                    while (true) {
-                        Character start = serverIn.readChar();
-                        if (start == 0) {
-                            System.out.println("Server got request for list of customers from client = 0");
-                            List<Customer> cstmrList = strg.getCustomers();
-                            int collectionSize = cstmrList.size();
-                            serverOut.writeInt(collectionSize);
-                            for (int i = 0; i < collectionSize; i++) {
-                                serverOut.writeObject(cstmrList.get(i));
-                            }
-                            System.out.println("Data transfer complete");
-                            serverOut.flush();
-                        }
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-    }
+//    public  void startServer() throws IOException {
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                try {
+//
+//                    ServerSocket ss = new ServerSocket(8080);
+//                    Socket socket = ss.accept();
+//
+//                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
+//                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+//
+//                    while (true) {
+//                        Character start = serverIn.readChar();
+//                        if (start == 0) {
+//                            System.out.println("Server got request for list of customers from client = 0");
+//                            List<Customer> cstmrList = strg.getCustomers();
+//                            int collectionSize = cstmrList.size();
+//                            serverOut.writeInt(collectionSize);
+//                            for (int i = 0; i < collectionSize; i++) {
+//                                serverOut.writeObject(cstmrList.get(i));
+//                            }
+//                            System.out.println("Data transfer complete");
+//                            serverOut.flush();
+//                        }
+//                    }
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//
+//    }
 
     public Shop() throws IOException {
         strg = new Storages();
-        startServer();
+        ss = new ShopServer();
+        ss.setShop(this);
+        ss.start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                try {
+//
+//                    ServerSocket ss = new ServerSocket(8080);
+//                    Socket socket = ss.accept();
+//
+//                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
+//                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+//
+//                    while (true) {
+//                        Character start = serverIn.readChar();
+//                        if (start == 0) {
+//                            System.out.println("Server got request for list of customers from client = 0");
+//                            List<Customer> cstmrList = strg.getCustomers();
+//                            int collectionSize = cstmrList.size();
+//                            serverOut.writeInt(collectionSize);
+//                            for (int i = 0; i < collectionSize; i++) {
+//                                serverOut.writeObject(cstmrList.get(i));
+//                            }
+//                            System.out.println("Data transfer complete");
+//                            serverOut.flush();
+//                        }
+//                    }
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
     }
 
     //OK
@@ -62,18 +95,19 @@ public class Shop {
         System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
         int actualBirdBalance = strg.getBirdBalance(birdName);
         if (number <= actualBirdBalance) {
-            prchs = new Purchase(customerName, birdName, number);
-            strg.addPurchase(prchs);
+            // create and add customer in Storages
             cstmr = new Customer();
             cstmr.setName(customerName);
             strg.addCustomer(cstmr);
+            // create and add purchase in Storages
+            prchs = new Purchase(customerName, birdName, number);
+            strg.addPurchase(prchs);
+            //
             System.out.println(customerName + " bout " + number + " " + birdName + "s.");
             System.out.println("New balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
         } else
             System.out.println("There are only " + actualBirdBalance + " " + birdName + " in storage, please, " +
                     "enter new Quantity - less then " + actualBirdBalance);
-
-
     }
 
     // methods to get reports
@@ -149,14 +183,16 @@ public class Shop {
 //	}
 
     // Get customers
-    public List<Customer> getCustomers() {
-        List customers = new ArrayList();
-        customers = strg.getCustomers();
-        return customers;
-    }
+//    public List<Customer> getCustomers() {
+//        List customers = new ArrayList();
+//        customers = strg.getCustomers();
+//        return customers;
+//    }
 
     // Catalog with categories
     public Name[] getCatalog() {
+
+
         int catalogLength = Name.values().length;
         Name[] catalog = new Name[catalogLength];
         for (int i = 0; i < Name.values().length; i++) {

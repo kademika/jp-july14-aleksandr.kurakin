@@ -6,10 +6,8 @@ import com.kademika.tanksGame.fieldObjects.Blank;
 import com.kademika.tanksGame.fieldObjects.Water;
 import com.kademika.tanksGame.tanks.*;
 import com.kademika.tanksGame.tanks.Action;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.*;
