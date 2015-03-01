@@ -1,5 +1,6 @@
 package com.kademika.shop;
 
+import com.kademika.shop.constants.Commands;
 import com.kademika.shop.constants.Name;
 
 import java.io.*;
@@ -64,13 +65,21 @@ static Socket socket;
     public void makePurchase (Purchase prch){
         try {
             clientOut.writeObject(prch);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public Name [] getCatalog(){
+        Command getCatalog = new Command();
+        getCatalog.setCommand(Commands.GETCATALOG);
+
+        try {
+            clientOut.writeObject(getCatalog);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Name[] catalog = {Name.CHICKEN, Name.DUCK, Name.EAGLE, Name.OWL, Name.PARROT, Name.CANARY}; // do not use yet
 
         return catalog;

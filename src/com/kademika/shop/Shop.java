@@ -1,13 +1,15 @@
 package com.kademika.shop;
 
+import com.kademika.shop.DAO.BirdDao;
+import com.kademika.shop.DAO.CustomerDao;
+import com.kademika.shop.DAO.PurchaseDao;
 import com.kademika.shop.constants.Name;
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Shop {
-    static private Storages strg;
+//    static private Storages strg;
     Purchase prchs;
     Customer cstmr;
     ShopServer ss;
@@ -51,7 +53,7 @@ public class Shop {
 //    }
 
     public Shop() throws IOException {
-        strg = new Storages();
+//        strg = new Storages();
         ss = new ShopServer();
         ss.setShop(this);
         ss.start();
@@ -91,20 +93,24 @@ public class Shop {
 
     //OK
     public void makePurchase(String customerName, Name birdName, int number) {
+        BirdDao bd = new BirdDao();
+        int actualBirdBalance = bd.getBirdBalance(birdName);
+        System.out.println("The balance of " + birdName + " in storage is: " + actualBirdBalance);
 
-        System.out.println("The balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
-        int actualBirdBalance = strg.getBirdBalance(birdName);
         if (number <= actualBirdBalance) {
             // create and add customer in Storages
             cstmr = new Customer();
             cstmr.setName(customerName);
-            strg.addCustomer(cstmr);
+            CustomerDao cd = new CustomerDao();
+            cd.insertCustomer(cstmr);
             // create and add purchase in Storages
             prchs = new Purchase(customerName, birdName, number);
-            strg.addPurchase(prchs);
+            PurchaseDao pd = new PurchaseDao();
+            pd.insertPurchase(prchs);
+            actualBirdBalance = bd.getBirdBalance(birdName);
             //
             System.out.println(customerName + " bout " + number + " " + birdName + "s.");
-            System.out.println("New balance of " + birdName + " in storage is: " + strg.getBirdBalance(birdName));
+            System.out.println("New balance of " + birdName + " in storage is: " + actualBirdBalance);
         } else
             System.out.println("There are only " + actualBirdBalance + " " + birdName + " in storage, please, " +
                     "enter new Quantity - less then " + actualBirdBalance);
@@ -182,12 +188,13 @@ public class Shop {
 //		System.out.println("Totaly: "+ n + " purchases  "+ priceTotal + "  " + amountTotal);
 //	}
 
-    // Get customers
-//    public List<Customer> getCustomers() {
-//        List customers = new ArrayList();
-//        customers = strg.getCustomers();
-//        return customers;
-//    }
+//    Get customers
+    public List<Customer> getCustomers() {
+        List customers = new ArrayList();
+        CustomerDao cd = new CustomerDao();
+        customers = cd.getAllCustomers();
+        return customers;
+    }
 
     // Catalog with categories
     public Name[] getCatalog() {

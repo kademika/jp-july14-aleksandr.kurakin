@@ -1,6 +1,8 @@
 package com.kademika.shop;
 
 import com.kademika.shop.constants.Name;
+import org.springframework.jdbc.support.JdbcUtils;
+
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,21 +10,25 @@ import java.util.List;
 
 public class Storages {
 
-    private Statement statement;
+//    private Statement statement;
+    private Connection connection;
 
     public Storages() {
-        try {
-//      Class.forName("com.mysql.jdbc.Driver");
-            String URL = "jdbc:mysql://localhost:3306/My_first_DB";
-            String USER = "root";
-            String PASS = "";
-            Connection con = DriverManager.getConnection(URL, USER, PASS);
-            System.out.println("Connected.");
-            statement = con.createStatement();
-            System.out.println("Statement created.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+////      Class.forName("com.mysql.jdbc.Driver");
+//            String URL = "jdbc:mysql://localhost:3306/My_first_DB";
+//            String USER = "root";
+//            String PASS = "";
+//            Connection connection = DriverManager.getConnection(URL, USER, PASS);
+//            System.out.println("Connected.");
+////            statement = connection.createStatement(); // into method
+//            System.out.println("Statement created."); // into method
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
         // KILL
 
@@ -34,9 +40,8 @@ public class Storages {
     public List<Customer> getCustomers() {
         List<Customer> customers = new ArrayList<>();
         String getCustomersQuery = "select * from customers;";
-
-// zdes ostanovilsja
         try{
+            Statement statement = connection.createStatement(); // into method
             ResultSet rsGetCustomers = statement.executeQuery(getCustomersQuery);
             while (rsGetCustomers.next()){
                 Customer tmpCustomer = new Customer();
@@ -45,9 +50,10 @@ public class Storages {
             }
         }catch (SQLException e){
             e.printStackTrace();
+
+        } finally {
+
         }
-
-
         return customers;
 
 //        return customerStorage.getItems();
@@ -55,15 +61,22 @@ public class Storages {
 
     public void addCustomer(Customer customer) {
         String customerName = customer.getName();
-        String checkCustomerInStorage = "select * from customers where name = '" + customerName + "';";
-        String insertCustomerQuery = "insert into customers (name) values ('" + customerName + "');";
+//        String checkCustomerInStorage = "select * from customers where name = '" + customerName + "';";
+
+        String insertCustomerQuery = "insert into customers (name) values (?);";
         try {
-            ResultSet rsCheckCustomerInStorage = statement.executeQuery(checkCustomerInStorage);
-            if (!rsCheckCustomerInStorage.next()) {
-                statement.execute(insertCustomerQuery);
-            }
+            PreparedStatement ps = connection.prepareStatement(insertCustomerQuery); // into method
+            ps.setString(1, customerName);
+            ps.execute();
+//            ResultSet rsCheckCustomerInStorage = statement.executeQuery(checkCustomerInStorage);
+//            if (!rsCheckCustomerInStorage.next()) {
+//                statement.execute(insertCustomerQuery);
+//            }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println(e.getSQLState());
+        } finally {
+//            JdbcUtils.
         }
 //        customerStorage.add(customer);
     }
@@ -72,6 +85,7 @@ public class Storages {
         int birdQuantity = 0;
         String birdBalanceQuery = "select * from bird_storage where type_name = '" + name.toString() + "';";
         try {
+            Statement statement = connection.createStatement(); // into method
             ResultSet rsBirdQuantity = statement.executeQuery(birdBalanceQuery);
             if (rsBirdQuantity.next()) {
                 birdQuantity = rsBirdQuantity.getInt("quantity");
@@ -103,6 +117,7 @@ public class Storages {
 //            System.out.println("Connected.");
 //            statement = con.createStatement();
 //            System.out.println("Statement created.");
+            Statement statement = connection.createStatement(); // into method
             ResultSet rsBirdID = statement.executeQuery(birdIDQuery);
             if (rsBirdID.next()) {
                 birdId = rsBirdID.getInt("birdID");

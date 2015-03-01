@@ -11,11 +11,11 @@ public class Bird {
 	
 	public Bird (Name name, double price){
 		this.name = name;
-		if (name.getId()==0||name.getId()==1){
+		if (name==Name.CHICKEN||name==Name.DUCK){
 			this.type = Type.FARM;
-		} else if (name.getId()==2||name.getId()==3){
+		} else if (name==Name.EAGLE||name==Name.OWL){
 			this.type = Type.WILD;
-		} else if (name.getId()==4||name.getId()==5){
+		} else if (name==Name.CANARY||name==Name.PARROT){
 			this.type = Type.DECORATE;
 		} else System.out.println("ERROR!! Invalid bird name.");
 
