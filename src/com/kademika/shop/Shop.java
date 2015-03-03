@@ -4,6 +4,10 @@ import com.kademika.shop.DAO.BirdDao;
 import com.kademika.shop.DAO.CustomerDao;
 import com.kademika.shop.DAO.PurchaseDao;
 import com.kademika.shop.constants.Name;
+import com.kademika.shop.entitys.Customer;
+import com.kademika.shop.entitys.Purchase;
+import com.kademika.shop.network.ShopServer;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +98,8 @@ public class Shop {
     //OK
     public void makePurchase(String customerName, Name birdName, int number) {
         BirdDao bd = new BirdDao();
+        CustomerDao cd = new CustomerDao();
+        PurchaseDao pd = new PurchaseDao();
         int actualBirdBalance = bd.getBirdBalance(birdName);
         System.out.println("The balance of " + birdName + " in storage is: " + actualBirdBalance);
 
@@ -101,11 +107,11 @@ public class Shop {
             // create and add customer in Storages
             cstmr = new Customer();
             cstmr.setName(customerName);
-            CustomerDao cd = new CustomerDao();
+
             cd.insertCustomer(cstmr);
             // create and add purchase in Storages
             prchs = new Purchase(customerName, birdName, number);
-            PurchaseDao pd = new PurchaseDao();
+
             pd.insertPurchase(prchs);
             actualBirdBalance = bd.getBirdBalance(birdName);
             //
@@ -196,9 +202,8 @@ public class Shop {
         return customers;
     }
 
-    // Catalog with categories
+    // Catalog with categories. Add Category column in BirdsDB
     public Name[] getCatalog() {
-
 
         int catalogLength = Name.values().length;
         Name[] catalog = new Name[catalogLength];

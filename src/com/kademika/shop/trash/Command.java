@@ -1,4 +1,4 @@
-package com.kademika.shop;
+package com.kademika.shop.trash;
 
 import com.kademika.shop.constants.Commands;
 import java.io.Serializable;

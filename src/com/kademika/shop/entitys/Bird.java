@@ -1,4 +1,4 @@
-package com.kademika.shop;
+package com.kademika.shop.entitys;
 
 import com.kademika.shop.constants.Name;
 import com.kademika.shop.constants.Type;

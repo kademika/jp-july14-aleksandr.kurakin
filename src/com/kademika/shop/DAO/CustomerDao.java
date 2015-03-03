@@ -1,8 +1,7 @@
 package com.kademika.shop.DAO;
 
 import com.kademika.shop.ConnectionFactory;
-import com.kademika.shop.Customer;
-import org.springframework.jdbc.support.JdbcUtils;
+import com.kademika.shop.entitys.Customer;
 
 import java.sql.*;
 import java.util.ArrayList;

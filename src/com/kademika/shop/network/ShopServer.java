@@ -1,18 +1,25 @@
-package com.kademika.shop;
+package com.kademika.shop.network;
 
-import com.kademika.shop.constants.Commands;
-import com.kademika.shop.constants.Name;
+import com.kademika.shop.entitys.Customer;
+
+import com.kademika.shop.entitys.Purchase;
+import com.kademika.shop.Shop;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 /**
  * Created by kurakinaleksandr on 19.02.15.
  */
 public class ShopServer {
-    Storages strgs;
+    ObjectInputStream serverIn;
+    ObjectOutputStream serverOut;
+
+//    Storages strgs;
     Purchase prch;
     Shop shop = null;
     Object start;
@@ -35,8 +42,8 @@ public class ShopServer {
                     ServerSocket ss = new ServerSocket(8080);
                     Socket socket = ss.accept();
 
-                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
-                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+                    serverIn = new ObjectInputStream(socket.getInputStream());
+                    serverOut = new ObjectOutputStream(socket.getOutputStream());
 
                     while (true) {
 
@@ -58,15 +65,37 @@ public class ShopServer {
             prch = (Purchase) start;
             shop.makePurchase(prch.getCustomer(), prch.getName(), prch.getNumberOfBirds());
 
-        } else if (start instanceof Command) {
-           makeCommand((Command) start);
-        }
-    }
+        } else if (start instanceof String & start.equals("Get all clients")) {
+            System.out.println("Client request new report: " + start);
+//            String command = (String) start;
 
-    public void makeCommand (Command command){
-        Commands cmnd = command.getCommand();
-        if (cmnd == Commands.GETCATALOG){
-            Name [] catalog = shop.getCatalog();
+            List<Customer> customers = shop.getCustomers();
+            int packetLength = customers.size();
+
+            try {
+                serverOut.writeInt(packetLength);
+
+                for (int i = 0; i < customers.size(); i++) {
+
+                    serverOut.writeObject(customers.get(i));
+
+                }
+                System.out.println("Data transfer complete");
+                serverOut.flush(); // !!!
+            }catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+//           makeCommand(command);
+        }
+
+
+    public void makeCommand (String command){
+//        Commands cmnd = command.getCommand();
+        if (command.equals("Get all clients")){
+
         }
     }
 

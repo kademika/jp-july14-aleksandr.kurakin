@@ -1,7 +1,8 @@
-package com.kademika.shop;
+package com.kademika.shop.trash;
 
+import com.kademika.shop.entitys.Customer;
+import com.kademika.shop.entitys.Purchase;
 import com.kademika.shop.constants.Name;
-import org.springframework.jdbc.support.JdbcUtils;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;

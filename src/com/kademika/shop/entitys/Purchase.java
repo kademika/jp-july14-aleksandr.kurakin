@@ -1,4 +1,4 @@
-package com.kademika.shop;
+package com.kademika.shop.entitys;
 
 import java.io.Serializable;
 import java.util.*;

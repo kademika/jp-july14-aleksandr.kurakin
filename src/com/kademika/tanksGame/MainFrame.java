@@ -1,10 +1,5 @@
 package com.kademika.tanksGame;
 
-import com.kademika.shop.Customer;
-import com.kademika.shop.constants.Name;
-import com.kademika.tanksGame.tanks.*;
-import com.kademika.tanksGame.tanks.Action;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

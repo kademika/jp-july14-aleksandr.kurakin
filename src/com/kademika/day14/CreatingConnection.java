@@ -27,7 +27,7 @@ public class CreatingConnection {
                 ResultSet rs = statement.executeQuery(sqlCommand);
 
                 while(rs.next()){
-                    int birdID = rs.getInt("customersID");
+                    int birdID = rs.getInt(1);
                     String birdType = rs.getString("name");
 //                    Double price = rs.getDouble("price");
                     System.out.println(" " + birdID + " " + birdType + " " +  " End of line");

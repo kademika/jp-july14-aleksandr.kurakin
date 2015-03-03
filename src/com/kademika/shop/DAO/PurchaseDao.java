@@ -1,7 +1,7 @@
 package com.kademika.shop.DAO;
 
 import com.kademika.shop.ConnectionFactory;
-import com.kademika.shop.Purchase;
+import com.kademika.shop.entitys.Purchase;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

@@ -1,6 +1,6 @@
 package com.kademika.shop.launchers;
 
-import com.kademika.shop.UserInterface;
+import com.kademika.shop.gui.UserInterface;
 
 import java.io.IOException;
 
