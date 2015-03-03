@@ -67,7 +67,6 @@ public class ShopServer {
 
         } else if (start instanceof String & start.equals("Get all clients")) {
             System.out.println("Client request new report: " + start);
-//            String command = (String) start;
 
             List<Customer> customers = shop.getCustomers();
             int packetLength = customers.size();
