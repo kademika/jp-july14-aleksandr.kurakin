@@ -40,7 +40,7 @@ public class CustomerDao {
             ResultSet rsGetCustomers = statement.executeQuery(getCustomersQuery);
             while (rsGetCustomers.next()){
                 Customer tmpCustomer = new Customer();
-                tmpCustomer.setName(rsGetCustomers.getString("name"));
+                tmpCustomer.setName(rsGetCustomers.getString(2));
                 customers.add(tmpCustomer);
             }
         }catch (SQLException e){

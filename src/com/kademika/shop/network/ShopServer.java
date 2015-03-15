@@ -16,13 +16,12 @@ import java.util.List;
  * Created by kurakinaleksandr on 19.02.15.
  */
 public class ShopServer {
-    ObjectInputStream serverIn;
-    ObjectOutputStream serverOut;
+    private ObjectInputStream serverIn;
+    private ObjectOutputStream serverOut;
 
-//    Storages strgs;
-    Purchase prch;
-    Shop shop = null;
-    Object start;
+    private Purchase prch;
+    private Shop shop = null;
+    private Object start;
 
     public void ShopServer() {
 
@@ -63,7 +62,7 @@ public class ShopServer {
         if (start instanceof Purchase) {
             System.out.println("Server got new purchase");
             prch = (Purchase) start;
-            shop.makePurchase(prch.getCustomer(), prch.getName(), prch.getNumberOfBirds());
+            shop.makePurchase(prch);
 
         } else if (start instanceof String & start.equals("Get all clients")) {
             System.out.println("Client request new report: " + start);
@@ -73,30 +72,25 @@ public class ShopServer {
 
             try {
                 serverOut.writeInt(packetLength);
-
                 for (int i = 0; i < customers.size(); i++) {
-
                     serverOut.writeObject(customers.get(i));
-
                 }
                 System.out.println("Data transfer complete");
                 serverOut.flush(); // !!!
-            }catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
 //           makeCommand(command);
-        }
-
-
-    public void makeCommand (String command){
-//        Commands cmnd = command.getCommand();
-        if (command.equals("Get all clients")){
-
-        }
     }
+
+
+//    public void makeCommand (String command){
+////        Commands cmnd = command.getCommand();
+//        if (command.equals("Get all clients")){
+//
+//        }
+//    }
 
 }
 //                            int collectionSize = cstmrList.size();

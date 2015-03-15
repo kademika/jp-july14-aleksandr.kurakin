@@ -17,6 +17,13 @@ public class SimpleClient {
     ObjectOutputStream clientOut;
     ObjectInputStream clientIn;
 
+    String str = "SELECT  purchases.purchaseID, customers.name, bird_storage.type_name, purchases.quantity,purchases.purchase_date FROM purchases" +
+            "" +
+            "  INNER JOIN customers " +
+            "    ON purchases.customerID=customers.customersID" +
+            "  inner join bird_storage" +
+            "  on purchases.birdID=bird_storage.birdID";
+
     public void SimpleClient() {
 
     }

@@ -13,93 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Shop {
-//    static private Storages strg;
-    Purchase prchs;
-    Customer cstmr;
-    ShopServer ss;
+
+    private Purchase prchs;
+    private Customer cstmr;
+    private ShopServer ss;
+    private BirdDao bd;
+    private CustomerDao cd;
+    private PurchaseDao pd;
 
 
-//    public  void startServer() throws IOException {
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                try {
-//
-//                    ServerSocket ss = new ServerSocket(8080);
-//                    Socket socket = ss.accept();
-//
-//                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
-//                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
-//
-//                    while (true) {
-//                        Character start = serverIn.readChar();
-//                        if (start == 0) {
-//                            System.out.println("Server got request for list of customers from client = 0");
-//                            List<Customer> cstmrList = strg.getCustomers();
-//                            int collectionSize = cstmrList.size();
-//                            serverOut.writeInt(collectionSize);
-//                            for (int i = 0; i < collectionSize; i++) {
-//                                serverOut.writeObject(cstmrList.get(i));
-//                            }
-//                            System.out.println("Data transfer complete");
-//                            serverOut.flush();
-//                        }
-//                    }
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//
-//    }
+
 
     public Shop() throws IOException {
-//        strg = new Storages();
+
         ss = new ShopServer();
         ss.setShop(this);
         ss.start();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                try {
-//
-//                    ServerSocket ss = new ServerSocket(8080);
-//                    Socket socket = ss.accept();
-//
-//                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
-//                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
-//
-//                    while (true) {
-//                        Character start = serverIn.readChar();
-//                        if (start == 0) {
-//                            System.out.println("Server got request for list of customers from client = 0");
-//                            List<Customer> cstmrList = strg.getCustomers();
-//                            int collectionSize = cstmrList.size();
-//                            serverOut.writeInt(collectionSize);
-//                            for (int i = 0; i < collectionSize; i++) {
-//                                serverOut.writeObject(cstmrList.get(i));
-//                            }
-//                            System.out.println("Data transfer complete");
-//                            serverOut.flush();
-//                        }
-//                    }
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
+        bd = new BirdDao();
+        cd = new CustomerDao();
+        pd = new PurchaseDao();
     }
 
     //OK
-    public void makePurchase(String customerName, Name birdName, int number) {
-        BirdDao bd = new BirdDao();
-        CustomerDao cd = new CustomerDao();
-        PurchaseDao pd = new PurchaseDao();
+    public void makePurchase(Purchase purchase) {
+
+        String customerName = purchase.getCustomer();
+        Name birdName = purchase.getName();
+        int number = purchase.getNumberOfBirds();
         int actualBirdBalance = bd.getBirdBalance(birdName);
         System.out.println("The balance of " + birdName + " in storage is: " + actualBirdBalance);
 
@@ -113,8 +53,9 @@ public class Shop {
             prchs = new Purchase(customerName, birdName, number);
 
             pd.insertPurchase(prchs);
+            bd.birdStrgUpdate(prchs);
             actualBirdBalance = bd.getBirdBalance(birdName);
-            //
+
             System.out.println(customerName + " bout " + number + " " + birdName + "s.");
             System.out.println("New balance of " + birdName + " in storage is: " + actualBirdBalance);
         } else
@@ -213,4 +154,41 @@ public class Shop {
 
         return catalog;
     }
+
+    //    public  void startServer() throws IOException {
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                try {
+//
+//                    ServerSocket ss = new ServerSocket(8080);
+//                    Socket socket = ss.accept();
+//
+//                    ObjectInputStream serverIn = new ObjectInputStream(socket.getInputStream());
+//                    ObjectOutputStream serverOut = new ObjectOutputStream(socket.getOutputStream());
+//
+//                    while (true) {
+//                        Character start = serverIn.readChar();
+//                        if (start == 0) {
+//                            System.out.println("Server got request for list of customers from client = 0");
+//                            List<Customer> cstmrList = strg.getCustomers();
+//                            int collectionSize = cstmrList.size();
+//                            serverOut.writeInt(collectionSize);
+//                            for (int i = 0; i < collectionSize; i++) {
+//                                serverOut.writeObject(cstmrList.get(i));
+//                            }
+//                            System.out.println("Data transfer complete");
+//                            serverOut.flush();
+//                        }
+//                    }
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//
+//    }
 }

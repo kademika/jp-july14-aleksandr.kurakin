@@ -18,7 +18,6 @@ public class PurchaseDao {
     private Connection connection;
 
     public PurchaseDao() {
-//        ConnectionFactory cf = new ConnectionFactory();
         connection = ConnectionFactory.getConnection();
     }
 
@@ -47,13 +46,8 @@ public class PurchaseDao {
             }
             String prchsUpdate = "insert into purchases (customerID, birdID, quantity, purchase_date) values (" + customerID + ", " + birdId + ", " +
                     quantity + ", '" + timeOfPurchase + "');";
-
             statement.execute(prchsUpdate);
 
-            String birdsUpdate = "update bird_storage set quantity = quantity - " + quantity + " where type_name = '" + purchase.getName().toString()
-                    + "';";
-
-            statement.execute(birdsUpdate);
         } catch (SQLException e) {
             e.printStackTrace();
         }
