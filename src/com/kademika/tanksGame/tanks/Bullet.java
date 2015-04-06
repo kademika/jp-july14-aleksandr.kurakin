@@ -69,15 +69,16 @@ public class Bullet implements Drawable, Destroyable {
 
 
     public void destroy() {
-        destroyed = true;
+        this.x = -100;
+        this.y = -100;
+        this.destroyed = true;
+
     }
 
     @Override
     public boolean isDestroyed() {
 
         return destroyed;
-
-
     }
 
     public int getSpeed() {

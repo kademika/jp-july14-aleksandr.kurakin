@@ -1,11 +1,9 @@
 package com.kademika.tanksGame;
 
-
-import com.kademika.tanksGame.fieldObjects.BFObject;
-import com.kademika.tanksGame.fieldObjects.Blank;
-import com.kademika.tanksGame.fieldObjects.Water;
+import com.kademika.tanksGame.fieldObjects.*;
 import com.kademika.tanksGame.tanks.*;
 import com.kademika.tanksGame.tanks.Action;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -22,7 +20,7 @@ public class ActionField extends JPanel {
     private boolean COLORDED_MODE = false;
     private MainFrame frame;
     private BattleField battleField;
-     Tank defender;
+    private Tank defender;
     private Tank aggressor;
     private volatile List<Bullet> bullets = new ArrayList<>();
     private File history = new File("history.txt");
@@ -81,14 +79,21 @@ public class ActionField extends JPanel {
 
     void setAction(KeyEvent event) {
 
-        switch (event.getKeyCode()){
+        switch (event.getKeyCode()) {
             case KeyEvent.VK_UP:
-                System.out.println("Pressed UP");
-                defender.setAction(Action.MOVE);
+                try {
+                    processAction(Action.TURN_UP, defender);
+//                    while (event.isShiftDown()) {
+                        defender.setAction(Action.MOVE);
+//                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case KeyEvent.VK_RIGHT:
                 try {
                     processAction(Action.TURN_RIGHT, defender);
+                    defender.setAction(Action.MOVE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -96,13 +101,22 @@ public class ActionField extends JPanel {
             case KeyEvent.VK_LEFT:
                 try {
                     processAction(Action.TURN_LEFT, defender);
+                    defender.setAction(Action.MOVE);
                 } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case KeyEvent.VK_DOWN:
+                try {
+                    processAction(Action.TURN_DOWN, defender);
+                    defender.setAction(Action.MOVE);
+                } catch (Exception e){
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_SPACE:
                 try {
-                    processAction(Action.FIRE,defender);
+                    processAction(Action.FIRE, defender);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -152,7 +166,7 @@ public class ActionField extends JPanel {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                        writeToFile(action, aggressor);
+                    writeToFile(action, aggressor);
                 }
                 frame.gameOverPanel();
             }
@@ -171,7 +185,7 @@ public class ActionField extends JPanel {
                     try {
                         action = defender.setUp();
                         processAction(action, defender);
-                        Thread.sleep(50);
+                        Thread.sleep(1);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -216,9 +230,7 @@ public class ActionField extends JPanel {
                 @Override
                 public void run() {
                     try {
-
                         processFire(bullet);
-//                        Thread.sleep(100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -232,6 +244,10 @@ public class ActionField extends JPanel {
             return;
         } else if (a == Action.TURN_RIGHT) {
             processTurn(t, Direction.RIGHT);
+        } else if(a == Action.TURN_UP){
+            processTurn(t, Direction.UP);
+        } else if (a == Action.TURN_DOWN){
+            processTurn(t, Direction.DOWN);
         }
 //        writeToFile(a, t);
     }
@@ -335,10 +351,10 @@ public class ActionField extends JPanel {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (bullet.isDestroyed() || (bullet.getX() > 580) || (bullet.getX() < -20) || (bullet.getY() > 580) || (bullet.getY() < -20)) {
-                bullets.remove(count);
-                bulletCount--;
-            }
+//            if (bullet.isDestroyed() || (bullet.getX() > 580) || (bullet.getX() < -20) || (bullet.getY() > 580) || (bullet.getY() < -20)) {
+//                bullets.remove(count);
+//                bulletCount--;
+//            }
         }
     }
 
@@ -346,6 +362,9 @@ public class ActionField extends JPanel {
     private boolean processInterception(Bullet bullet) {
 
         String bulletCoordinates = getQuadrant(bullet.getX(), bullet.getY());
+        int [] bulletCoordinateInt = {bullet.getX(), bullet.getY()};
+        int [] aggressorCoordinates = {aggressor.getX(), aggressor.getY()};
+        int [] defenderCoordinates = {defender.getX(), defender.getY()};
 
         int v = Integer.parseInt(bulletCoordinates.split("_")[0]);
         int h = Integer.parseInt(bulletCoordinates.split("_")[1]);
@@ -355,30 +374,40 @@ public class ActionField extends JPanel {
             if (!bfObject.isDestroyed() && !(bfObject instanceof Blank) && !(bfObject instanceof Water)) {
                 battleField.destroyObject(v, h);
 //                bullet.destroy();
-//                bullets.remove(bullet);
                 return true;
             }
-
             // check aggressor
-            if (!aggressor.isDestroyed() && checkInterception(getQuadrant(aggressor.getX(), aggressor.getY()), bulletCoordinates)) {
+            if (!aggressor.isDestroyed() && checkInterception(aggressorCoordinates, bulletCoordinateInt)) {
                 aggressor.destroy();
 //                bullet.destroy();
-//                bullets.remove(bullet);
+                System.out.println("Aggressor is destroyed");
                 return true;
             }
-
             // check defender
-            if (!defender.isDestroyed() && checkInterception(getQuadrant(defender.getX(), defender.getY()), bulletCoordinates)) {
+            if (!defender.isDestroyed() && checkInterception(defenderCoordinates, bulletCoordinateInt)) {
                 defender.destroy();
 //                bullet.destroy();
-//                bullets.remove(bullet);
+                System.out.println("Defender is destroyed " );
                 return true;
             }
         }
         return false;
     }
 
-    // Check Interception, ARRAY
+    // Check Interception, ARRAY, Coordinates
+    private boolean checkInterception(int [] tankCoordinates, int [] bulletCoordinates){
+        int tx = tankCoordinates[0];
+        int ty = tankCoordinates[1];
+        int bx = bulletCoordinates[0];
+        int by = bulletCoordinates[1];
+
+        if((bx>=tx)&(bx<(tx+50))&(by>=ty)&(by<(ty+50))){
+            return true;
+        }
+        return false;
+    }
+
+    // Check Interception String, Quadrant
     private boolean checkInterception(String object, String quadrant) {
         int oy = Integer.parseInt(object.split("_")[0]);
         int ox = Integer.parseInt(object.split("_")[1]);
@@ -395,6 +424,11 @@ public class ActionField extends JPanel {
     }
 
     // Get quadrant, ARRAY
+    public int[] getCoordinates(int x, int y){
+        int [] coordinates = {x, y};
+        return coordinates;
+    }
+
     public String getQuadrant(int x, int y) {
         // input data should be correct
         return y / 64 + "_" + x / 64;
@@ -428,6 +462,12 @@ public class ActionField extends JPanel {
             return action;
         } else if (command.equals("TURN_RIGHT")) {
             action = Action.TURN_RIGHT;
+            return action;
+        } else if (command.equals("TURN_UP")) {
+            action = Action.TURN_UP;
+            return action;
+        } else if (command.equals("TURN_DOWN")) {
+            action = Action.TURN_DOWN;
             return action;
         }
 

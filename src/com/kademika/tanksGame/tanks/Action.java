@@ -5,6 +5,6 @@ package com.kademika.tanksGame.tanks;
  */
 public enum Action {
 
-    NONE, MOVE, FIRE, TURN_RIGHT, TURN_LEFT;
+    NONE, MOVE, FIRE, TURN_RIGHT, TURN_LEFT, TURN_UP, TURN_DOWN;
 }
 

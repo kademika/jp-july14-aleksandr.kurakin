@@ -52,44 +52,41 @@ public abstract class AbstractTank implements Tank {
 
     @Override // Turn
     public void turn(Direction direction) {
-        if (direction == Direction.RIGHT) {
-
-            if (this.direction == Direction.UP) {
-                this.direction = Direction.RIGHT;
-                return;
-            } else if (this.direction == Direction.RIGHT) {
-                this.direction = direction.DOWN;
-                return;
-            } else if (this.direction == Direction.DOWN) {
-                this.direction = Direction.LEFT;
-                return;
-            } else if (this.direction == Direction.LEFT) {
-                this.direction = Direction.UP;
-                return;
-            }
-            return;
-
-        } else if (direction == Direction.LEFT) {
-
-            if (this.direction == Direction.UP) {
-                this.direction = Direction.LEFT;
-                return;
-            } else if (this.direction == Direction.LEFT) {
-                this.direction = Direction.LEFT;
-                return;
-            } else if (this.direction == Direction.DOWN) {
-                this.direction = Direction.RIGHT;
-                return;
-            } else if (this.direction == Direction.RIGHT) {
-                this.direction = direction.UP;
-                return;
-            }
-        }
-//        this.direction = direction;
+//        if (direction == Direction.RIGHT) {
+//
+//            if (this.direction == Direction.UP) {
+//                this.direction = Direction.RIGHT;
+//                return;
+//            } else if (this.direction == Direction.RIGHT) {
+//                this.direction = direction.DOWN;
+//                return;
+//            } else if (this.direction == Direction.DOWN) {
+//                this.direction = Direction.LEFT;
+//                return;
+//            } else if (this.direction == Direction.LEFT) {
+//                this.direction = Direction.UP;
+//                return;
+//            }
+//            return;
+//
+//        } else if (direction == Direction.LEFT) {
+//
+//            if (this.direction == Direction.UP) {
+//                this.direction = Direction.LEFT;
+//                return;
+//            } else if (this.direction == Direction.LEFT) {
+//                this.direction = Direction.LEFT;
+//                return;
+//            } else if (this.direction == Direction.DOWN) {
+//                this.direction = Direction.RIGHT;
+//                return;
+//            } else if (this.direction == Direction.RIGHT) {
+//                this.direction = direction.UP;
+//                return;
+//            }
+//        }
+        this.direction = direction;
     }
-
-//    public void move() {
-//    }
 
     @Override // Creating Bullet in front of Tank: OK
     public Bullet fire() {

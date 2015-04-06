@@ -29,7 +29,7 @@ public class T34 extends AbstractTank {
             Action.FIRE,
             Action.MOVE,
             Action.TURN_RIGHT,
-//            Action.FIRE,
+            Action.FIRE,
             Action.MOVE,
             Action.TURN_LEFT,
             Action.FIRE,

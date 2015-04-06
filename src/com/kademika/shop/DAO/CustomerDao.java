@@ -18,7 +18,7 @@ public class CustomerDao {
     }
 
     public void insertCustomer(Customer customer) {
-        String insertCustomerQuery = "insert into customers (name) values (?);";
+        String insertCustomerQuery = "insert into customers (name) values (?)";
         try {
             PreparedStatement ps = connection.prepareStatement(insertCustomerQuery);
             ps.setString(1, customer.getName());
@@ -27,14 +27,14 @@ public class CustomerDao {
             e.printStackTrace();
             System.out.println(e.getSQLState());
         }finally {
-// need to close statement?
+// do we need to close statement?
         }
 
     }
 
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
-        String getCustomersQuery = "select * from customers;";
+        String getCustomersQuery = "select * from customers";
         try{
             Statement statement = connection.createStatement();
             ResultSet rsGetCustomers = statement.executeQuery(getCustomersQuery);
