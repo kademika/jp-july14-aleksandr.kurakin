@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.List;
 
 public class ActionField extends JPanel {
-
     public void setMf(MainFrame mf) {
         this.frame = mf;
     }
@@ -27,18 +26,10 @@ public class ActionField extends JPanel {
     private int step = 1;
     private volatile int bulletCount = 0;
 
-//    public void setDefenderAction(Action defenderAction) {
-//        this.defenderAction = defenderAction;
-//    }
-//
-//    Action defenderAction;
-
     // ActionField constructor without parameter, ARRAY
     public ActionField() throws Exception {
-
         battleField = new BattleField();
         defender = new T34(battleField);
-
         String location = battleField.getAggressorLocation();
         aggressor = new BT7(battleField,
                 Integer.parseInt(location.split("_")[1]), Integer.parseInt(location.split("_")[0]), Direction.RIGHT);
@@ -50,7 +41,6 @@ public class ActionField extends JPanel {
      * Write your code here.
      */
     void replay() {
-
         String command;
         try {
             BufferedReader reader = new BufferedReader(new FileReader(history));
@@ -78,39 +68,44 @@ public class ActionField extends JPanel {
     }
 
     void setAction(KeyEvent event) {
-
         switch (event.getKeyCode()) {
             case KeyEvent.VK_UP:
                 try {
-                    processAction(Action.TURN_UP, defender);
-//                    while (event.isShiftDown()) {
+                    if (!(defender.getDirection() == Direction.UP)) {
+                        defender.turn(Direction.UP);
+                    } else
                         defender.setAction(Action.MOVE);
-//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_RIGHT:
                 try {
-                    processAction(Action.TURN_RIGHT, defender);
-                    defender.setAction(Action.MOVE);
+                    if (!(defender.getDirection() == Direction.RIGHT)) {
+                        defender.turn(Direction.RIGHT);
+                    } else
+                        defender.setAction(Action.MOVE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_LEFT:
                 try {
-                    processAction(Action.TURN_LEFT, defender);
-                    defender.setAction(Action.MOVE);
+                    if (!(defender.getDirection() == Direction.LEFT)) {
+                        defender.turn(Direction.LEFT);
+                    } else
+                        defender.setAction(Action.MOVE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_DOWN:
                 try {
-                    processAction(Action.TURN_DOWN, defender);
+                    if (!(defender.getDirection() == Direction.DOWN)) {
+                        defender.turn(Direction.DOWN);
+                    }
                     defender.setAction(Action.MOVE);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
@@ -160,7 +155,6 @@ public class ActionField extends JPanel {
                 while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
                     action = aggressor.setUp();
                     try {
-
                         processAction(action, aggressor);
                         Thread.sleep(500);
                     } catch (Exception e) {
@@ -179,9 +173,7 @@ public class ActionField extends JPanel {
 
             @Override
             public void run() {
-
                 while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
-
                     try {
                         action = defender.setUp();
                         processAction(action, defender);
@@ -220,7 +212,6 @@ public class ActionField extends JPanel {
             processMove(t);
             return;
         } else if (a == Action.FIRE) {
-
             bullet = t.fire();
             bullet.setCount(bulletCount);
             bullets.add(bullet);
@@ -237,16 +228,15 @@ public class ActionField extends JPanel {
 //                    writeToFile(Action.FIRE, aggressor);
                 }
             }).start();
-//            // To here
             return;
         } else if (a == Action.TURN_LEFT) {
             processTurn(t, Direction.LEFT);
             return;
         } else if (a == Action.TURN_RIGHT) {
             processTurn(t, Direction.RIGHT);
-        } else if(a == Action.TURN_UP){
+        } else if (a == Action.TURN_UP) {
             processTurn(t, Direction.UP);
-        } else if (a == Action.TURN_DOWN){
+        } else if (a == Action.TURN_DOWN) {
             processTurn(t, Direction.DOWN);
         }
 //        writeToFile(a, t);
@@ -262,10 +252,8 @@ public class ActionField extends JPanel {
 
         Direction direction = tank.getDirection();
         int step = 1;
-
         for (int i = 0; i < tank.getMovePath(); i++) {
             int covered = 0;
-
             String tankQuadrant = getQuadrant(tank.getX(), tank.getY());
             //split string form coordinates in array
             int v = Integer.parseInt(tankQuadrant.split("_")[0]); // V - means vertical or Y/64
@@ -300,28 +288,18 @@ public class ActionField extends JPanel {
                     return false;
                 }
             }
-
 //            else return false; // This can be a mistake!!!
-
-
-            while (covered < 64) {
+            while (covered < 4) { //                                   64 was
                 if (direction == Direction.UP) {
                     tank.updateY(-step);
-                    //				System.out.println("[move up] direction: " + direction + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
                 } else if (direction == Direction.DOWN) {
                     tank.updateY(step);
-                    //				System.out.println("[move down] direction: " + direction + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
                 } else if (direction == Direction.LEFT) {
                     tank.updateX(-step);
-                    //				System.out.println("[move left] direction: " + direction + " tankX: " + tank.getX() + ", tankY: " + tank.getY());
                 } else {
                     tank.updateX(step);
-                    //				System.out.println("[move right] direction: " + direction + " tankX: " + tank.getX() + ",
-                    // tankY: " + tank.getY());
                 }
                 covered += step;
-
-//                repaint();
                 Thread.sleep(tank.getSpeed());
             }
         }
@@ -331,7 +309,7 @@ public class ActionField extends JPanel {
 
     // Process Fire
     private void processFire(Bullet bullet) throws Exception {
-        int count = bullet.getCount();
+//        int count = bullet.getCount();
         while ((bullet.getX() > -14) && (bullet.getX() < 590)
                 && (bullet.getY() > -14) && (bullet.getY() < 590)) {
             if (bullet.getDirection() == Direction.UP) {
@@ -351,10 +329,6 @@ public class ActionField extends JPanel {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            if (bullet.isDestroyed() || (bullet.getX() > 580) || (bullet.getX() < -20) || (bullet.getY() > 580) || (bullet.getY() < -20)) {
-//                bullets.remove(count);
-//                bulletCount--;
-//            }
         }
     }
 
@@ -362,9 +336,9 @@ public class ActionField extends JPanel {
     private boolean processInterception(Bullet bullet) {
 
         String bulletCoordinates = getQuadrant(bullet.getX(), bullet.getY());
-        int [] bulletCoordinateInt = {bullet.getX(), bullet.getY()};
-        int [] aggressorCoordinates = {aggressor.getX(), aggressor.getY()};
-        int [] defenderCoordinates = {defender.getX(), defender.getY()};
+        int[] bulletCoordinateInt = {bullet.getX(), bullet.getY()};
+        int[] aggressorCoordinates = {aggressor.getX(), aggressor.getY()};
+        int[] defenderCoordinates = {defender.getX(), defender.getY()};
 
         int v = Integer.parseInt(bulletCoordinates.split("_")[0]);
         int h = Integer.parseInt(bulletCoordinates.split("_")[1]);
@@ -387,7 +361,7 @@ public class ActionField extends JPanel {
             if (!defender.isDestroyed() && checkInterception(defenderCoordinates, bulletCoordinateInt)) {
                 defender.destroy();
 //                bullet.destroy();
-                System.out.println("Defender is destroyed " );
+                System.out.println("Defender is destroyed ");
                 return true;
             }
         }
@@ -395,13 +369,13 @@ public class ActionField extends JPanel {
     }
 
     // Check Interception, ARRAY, Coordinates
-    private boolean checkInterception(int [] tankCoordinates, int [] bulletCoordinates){
+    private boolean checkInterception(int[] tankCoordinates, int[] bulletCoordinates) {
         int tx = tankCoordinates[0];
         int ty = tankCoordinates[1];
         int bx = bulletCoordinates[0];
         int by = bulletCoordinates[1];
 
-        if((bx>=tx)&(bx<(tx+50))&(by>=ty)&(by<(ty+50))){
+        if ((bx >= tx) & (bx < (tx + 50)) & (by >= ty) & (by < (ty + 50))) {
             return true;
         }
         return false;
@@ -424,8 +398,8 @@ public class ActionField extends JPanel {
     }
 
     // Get quadrant, ARRAY
-    public int[] getCoordinates(int x, int y){
-        int [] coordinates = {x, y};
+    public int[] getCoordinates(int x, int y) {
+        int[] coordinates = {x, y};
         return coordinates;
     }
 
