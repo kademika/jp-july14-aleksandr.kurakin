@@ -18,7 +18,6 @@ public abstract class AbstractTank implements Tank {
     private int speed = 10;
     protected int movePath = 1;
     protected int armor = 1;
-    // 1 - up, 2 - down, 3 - left, 4 - right
     private Direction direction;
     // current position on BF
     private int x;
@@ -26,12 +25,18 @@ public abstract class AbstractTank implements Tank {
     private boolean destroyed;
     private BattleField bf;
     Action action = Action.NONE;
+//    Action[] acts = {Action.NONE, Action.NONE};    // for action array
 
     public void setAction(Action action) {
+//        acts[1] = action;  // for action array
         this.action = action;
     }
 
-    public Action getAction(){
+    public Action setUp() {
+//        Action action0 = acts[0];                 // for action array
+//        acts[0] = acts[1];                        // for action array
+//        acts[1] = Action.NONE;                    // for action array
+//        return action0;
         return action;
     }
 
@@ -111,6 +116,11 @@ public abstract class AbstractTank implements Tank {
     @Override // Check is Tank destroyed
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    @Override
+    public Action getAction() {
+        return action;
     }
 
     // Do we need this method?

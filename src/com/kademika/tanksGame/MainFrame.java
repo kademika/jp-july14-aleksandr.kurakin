@@ -33,24 +33,33 @@ public class MainFrame extends JFrame {
 
     }
 
-    public void loadAF() {
+    public void loadAF(String userTank) {
         this.getContentPane().removeAll();
         this.getContentPane().add(af);
         this.revalidate();
         this.pack();
         af.setVisible(true);
-
-//                SwingWorker workerAF = new SwingWorker() {
-//                    @Override
-//                    protected Object doInBackground() throws Exception {
-
+        af.setUpUserTank(userTank);
         try {
             af.runTheGameMT();
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-
     }
+
+    public void replay() {
+        this.getContentPane().removeAll();
+        this.getContentPane().add(af);
+        this.revalidate();
+        this.pack();
+        af.setVisible(true);
+        try {
+            af.replay();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
 
     public JPanel startPanel() {
 
@@ -76,7 +85,7 @@ public class MainFrame extends JFrame {
         buttonStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadAF();
+                loadAF(patternList.getSelectedItem().toString()); // here
             }
         });
 
@@ -90,7 +99,8 @@ public class MainFrame extends JFrame {
         return sp;
     }
 
-    public JPanel gameOverPanel() {
+
+    public void gameOverPanel() { //JPanel
         JPanel gop = new JPanel();
         gop.setLayout(new GridBagLayout());
 
@@ -102,13 +112,6 @@ public class MainFrame extends JFrame {
         gop.add(buttonExit, new GridBagConstraints(
                 0, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
-        buttonReplay.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                af.replay();
-            }
-
-        });
 
         this.getContentPane().removeAll();
         this.getContentPane().add(gop);
@@ -116,7 +119,15 @@ public class MainFrame extends JFrame {
         this.pack();
         gop.setVisible(true);
 
-        return gop;
+        buttonReplay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                replay();
+//                af.replay();
+            }
+
+        });
+//        return gop;
     }
 
 }

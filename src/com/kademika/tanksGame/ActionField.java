@@ -21,6 +21,8 @@ public class ActionField extends JPanel {
     private BattleField battleField;
     private Tank defender;
     private Tank aggressor;
+    private Tank autoTank;
+    private Tank userTank;
     private volatile List<Bullet> bullets = new ArrayList<>();
     private File history = new File("history.txt");
     private int step = 1;
@@ -33,8 +35,6 @@ public class ActionField extends JPanel {
         String location = battleField.getAggressorLocation();
         aggressor = new BT7(battleField,
                 Integer.parseInt(location.split("_")[1]), Integer.parseInt(location.split("_")[0]), Direction.RIGHT);
-
-
     }
 
     /**
@@ -67,73 +67,106 @@ public class ActionField extends JPanel {
 
     }
 
+    public void setUpUserTank(String userTank) {
+        if (userTank.equals("Aggressor")) {
+            this.userTank = aggressor;
+            this.autoTank = defender;
+        } else {
+            this.userTank = defender;
+            this.autoTank = aggressor;
+        }
+    }
+
+    // Make intelligent
+    private void setAutoAction() {
+        new Thread(new Runnable() {
+            Action[] actoins = new Action[]{
+                    Action.TURN_LEFT,
+                    Action.FIRE,
+                    Action.MOVE,
+                    Action.TURN_DOWN,
+                    Action.FIRE,
+                    Action.MOVE,
+                    Action.TURN_RIGHT,
+                    Action.FIRE,
+                    Action.MOVE,
+                    Action.TURN_DOWN,
+                    Action.FIRE,
+                    Action.MOVE,
+                    Action.TURN_RIGHT,
+                    Action.FIRE,
+                    Action.MOVE,
+                    Action.TURN_DOWN,
+                    Action.FIRE,
+                    Action.MOVE,
+                    Action.TURN_LEFT,
+                    Action.FIRE,
+                    Action.MOVE,
+            };
+            @Override
+            public void run() {
+                int step = 0;
+                while (!defender.isDestroyed() && !aggressor.isDestroyed()) {
+                    if (step >= actoins.length) {
+                        step = 0;
+                    }
+                    autoTank.setAction(actoins[step++]);
+                }
+            }
+        }).start();
+
+
+
+    }
+
     void setAction(KeyEvent event) {
         switch (event.getKeyCode()) {
             case KeyEvent.VK_UP:
                 try {
-                    if (!(defender.getDirection() == Direction.UP)) {
-                        defender.turn(Direction.UP);
+                    if (!(userTank.getDirection() == Direction.UP)) {
+                        userTank.setAction(Action.TURN_UP);
                     } else
-                        defender.setAction(Action.MOVE);
+                        userTank.setAction(Action.MOVE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_RIGHT:
                 try {
-                    if (!(defender.getDirection() == Direction.RIGHT)) {
-                        defender.turn(Direction.RIGHT);
+                    if (!(userTank.getDirection() == Direction.RIGHT)) {
+                        userTank.setAction(Action.TURN_RIGHT);
                     } else
-                        defender.setAction(Action.MOVE);
+                        userTank.setAction(Action.MOVE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_LEFT:
                 try {
-                    if (!(defender.getDirection() == Direction.LEFT)) {
-                        defender.turn(Direction.LEFT);
+                    if (!(userTank.getDirection() == Direction.LEFT)) {
+                        userTank.setAction(Action.TURN_LEFT);
                     } else
-                        defender.setAction(Action.MOVE);
+                        userTank.setAction(Action.MOVE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_DOWN:
                 try {
-                    if (!(defender.getDirection() == Direction.DOWN)) {
-                        defender.turn(Direction.DOWN);
-                    }
-                    defender.setAction(Action.MOVE);
+                    if (!(userTank.getDirection() == Direction.DOWN)) {
+                        userTank.setAction(Action.TURN_DOWN);
+                    } else
+                        userTank.setAction(Action.MOVE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case KeyEvent.VK_SPACE:
                 try {
-                    processAction(Action.FIRE, defender);
+                    processAction(Action.FIRE, userTank);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-        }
-    }
-
-    // Run The Game With Writing in File: OK
-    void runTheGameWithWriteToFile() throws Exception {
-        //clear the history file
-        clearHistory(new File("history.txt"));
-        Action action;
-        while (true) {
-            if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
-                action = aggressor.setUp();
-                processAction(action, aggressor);
-                writeToFile(action, aggressor);
-            }
-            if (!aggressor.isDestroyed() && !defender.isDestroyed()) {
-                action = defender.setUp();
-                processAction(action, defender);
-                writeToFile(action, defender);
-            }
         }
     }
 
@@ -142,6 +175,7 @@ public class ActionField extends JPanel {
         //clear the history file
         clearHistory(new File("history.txt"));
 
+        setAutoAction();
         aggressorAction();
         defenderAction();
         screenUpdate();
@@ -156,11 +190,12 @@ public class ActionField extends JPanel {
                     action = aggressor.setUp();
                     try {
                         processAction(action, aggressor);
-                        Thread.sleep(500);
+                        writeToFile(action, aggressor);
+                        Thread.sleep(1);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    writeToFile(action, aggressor);
+//                    writeToFile(action, aggressor);
                 }
                 frame.gameOverPanel();
             }
@@ -169,14 +204,14 @@ public class ActionField extends JPanel {
 
     private void defenderAction() {
         new Thread(new Runnable() {
-            Action action;
-
             @Override
             public void run() {
+                Action action;
                 while (!aggressor.isDestroyed() && !defender.isDestroyed()) {
+                    action = defender.setUp();
                     try {
-                        action = defender.setUp();
                         processAction(action, defender);
+                        writeToFile(action, defender);
                         Thread.sleep(1);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -208,6 +243,7 @@ public class ActionField extends JPanel {
     // Process Action
     private void processAction(Action a, Tank t) throws Exception {
         final Bullet bullet;
+
         if (a == Action.MOVE) {
             processMove(t);
             return;
@@ -216,7 +252,6 @@ public class ActionField extends JPanel {
             bullet.setCount(bulletCount);
             bullets.add(bullet);
             bulletCount++;
-            // From here
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -225,7 +260,6 @@ public class ActionField extends JPanel {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-//                    writeToFile(Action.FIRE, aggressor);
                 }
             }).start();
             return;
@@ -289,7 +323,7 @@ public class ActionField extends JPanel {
                 }
             }
 //            else return false; // This can be a mistake!!!
-            while (covered < 4) { //                                   64 was
+            while (covered < 64) { //                                   64 was
                 if (direction == Direction.UP) {
                     tank.updateY(-step);
                 } else if (direction == Direction.DOWN) {
@@ -382,26 +416,26 @@ public class ActionField extends JPanel {
     }
 
     // Check Interception String, Quadrant
-    private boolean checkInterception(String object, String quadrant) {
-        int oy = Integer.parseInt(object.split("_")[0]);
-        int ox = Integer.parseInt(object.split("_")[1]);
-
-        int qy = Integer.parseInt(quadrant.split("_")[0]);
-        int qx = Integer.parseInt(quadrant.split("_")[1]);
-
-        if (oy >= 0 && oy < 9 && ox >= 0 && ox < 9) {
-            if (oy == qy && ox == qx) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    private boolean checkInterception(String object, String quadrant) {
+//        int oy = Integer.parseInt(object.split("_")[0]);
+//        int ox = Integer.parseInt(object.split("_")[1]);
+//
+//        int qy = Integer.parseInt(quadrant.split("_")[0]);
+//        int qx = Integer.parseInt(quadrant.split("_")[1]);
+//
+//        if (oy >= 0 && oy < 9 && ox >= 0 && ox < 9) {
+//            if (oy == qy && ox == qx) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     // Get quadrant, ARRAY
-    public int[] getCoordinates(int x, int y) {
-        int[] coordinates = {x, y};
-        return coordinates;
-    }
+//    public int[] getCoordinates(int x, int y) {
+//        int[] coordinates = {x, y};
+//        return coordinates;
+//    }
 
     public String getQuadrant(int x, int y) {
         // input data should be correct
@@ -489,7 +523,10 @@ public class ActionField extends JPanel {
         defender.draw(g);
         aggressor.draw(g);
         for (int j = 0; j < bullets.size(); j++) {
-            bullets.get(j).draw(g);
+            Bullet bullet = bullets.get(j);
+            if ((bullet.getX() > -14 && bullet.getX() < 590) && (bullet.getY() > -14 && bullet.getY() < 590)) {
+                bullet.draw(g);
+            }
         }
 
     }
