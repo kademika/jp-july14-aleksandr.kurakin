@@ -67,115 +67,63 @@ public class ActionField extends JPanel {
 
     }
 
-    public void setUpUserTank(String userTank) {
+    // set up Tanks user/auto for single game
+    public void setUpUserTankSingleGame(String userTank) {
         if (userTank.equals("Aggressor")) {
             this.userTank = aggressor;
             this.autoTank = defender;
+            defender.setAuto(true);
+            aggressor.setAuto(false);
         } else {
             this.userTank = defender;
             this.autoTank = aggressor;
+            defender.setAuto(false);
+            aggressor.setAuto(true);
         }
     }
 
-    // Make intelligent
-    private void setAutoAction() {
-        new Thread(new Runnable() {
-            Action[] actoins = new Action[]{
-                    Action.TURN_LEFT,
-                    Action.FIRE,
-                    Action.MOVE,
-                    Action.TURN_DOWN,
-                    Action.FIRE,
-                    Action.MOVE,
-                    Action.TURN_RIGHT,
-                    Action.FIRE,
-                    Action.MOVE,
-                    Action.TURN_DOWN,
-                    Action.FIRE,
-                    Action.MOVE,
-                    Action.TURN_RIGHT,
-                    Action.FIRE,
-                    Action.MOVE,
-                    Action.TURN_DOWN,
-                    Action.FIRE,
-                    Action.MOVE,
-                    Action.TURN_LEFT,
-                    Action.FIRE,
-                    Action.MOVE,
-            };
-            @Override
-            public void run() {
-                int step = 0;
-                while (!defender.isDestroyed() && !aggressor.isDestroyed()) {
-                    if (step >= actoins.length) {
-                        step = 0;
-                    }
-                    autoTank.setAction(actoins[step++]);
-                }
-            }
-        }).start();
-
-
-
-    }
-
-    void setAction(KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.VK_UP:
-                try {
-                    if (!(userTank.getDirection() == Direction.UP)) {
+    public void setAction(KeyEvent event) {
+        try {
+            switch (event.getKeyCode()) {
+                case KeyEvent.VK_UP:
+                    if (!(userTank.getDirection() == Direction.UP)) { // method
                         userTank.setAction(Action.TURN_UP);
                     } else
                         userTank.setAction(Action.MOVE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case KeyEvent.VK_RIGHT:
-                try {
+                    break;
+                case KeyEvent.VK_RIGHT:
                     if (!(userTank.getDirection() == Direction.RIGHT)) {
                         userTank.setAction(Action.TURN_RIGHT);
                     } else
                         userTank.setAction(Action.MOVE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case KeyEvent.VK_LEFT:
-                try {
+                    break;
+                case KeyEvent.VK_LEFT:
+
                     if (!(userTank.getDirection() == Direction.LEFT)) {
                         userTank.setAction(Action.TURN_LEFT);
                     } else
                         userTank.setAction(Action.MOVE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case KeyEvent.VK_DOWN:
-                try {
+                    break;
+                case KeyEvent.VK_DOWN:
                     if (!(userTank.getDirection() == Direction.DOWN)) {
                         userTank.setAction(Action.TURN_DOWN);
                     } else
                         userTank.setAction(Action.MOVE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case KeyEvent.VK_SPACE:
-                try {
+                    break;
+                case KeyEvent.VK_SPACE:
                     processAction(Action.FIRE, userTank);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                    userTank.setAction(Action.FIRE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    //Run game in multi threads
+    //Run game in multi thread
     void runTheGameMT() throws Exception {
         //clear the history file
         clearHistory(new File("history.txt"));
 
-        setAutoAction();
         aggressorAction();
         defenderAction();
         screenUpdate();
@@ -190,8 +138,8 @@ public class ActionField extends JPanel {
                     action = aggressor.setUp();
                     try {
                         processAction(action, aggressor);
-                        writeToFile(action, aggressor);
-                        Thread.sleep(1);
+                        writeToFile(action, aggressor); // отдельный поток
+                        Thread.sleep(100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -212,7 +160,7 @@ public class ActionField extends JPanel {
                     try {
                         processAction(action, defender);
                         writeToFile(action, defender);
-                        Thread.sleep(1);
+                        Thread.sleep(100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -222,7 +170,6 @@ public class ActionField extends JPanel {
             }
         }).start();
     }
-
 
     private void screenUpdate() {
         new Thread(new Runnable() {
@@ -242,6 +189,7 @@ public class ActionField extends JPanel {
 
     // Process Action
     private void processAction(Action a, Tank t) throws Exception {
+
         final Bullet bullet;
 
         if (a == Action.MOVE) {
@@ -273,6 +221,7 @@ public class ActionField extends JPanel {
         } else if (a == Action.TURN_DOWN) {
             processTurn(t, Direction.DOWN);
         }
+//        sendToNet(a, t); // Sending Action and Tank to Net
 //        writeToFile(a, t);
     }
 
@@ -343,7 +292,6 @@ public class ActionField extends JPanel {
 
     // Process Fire
     private void processFire(Bullet bullet) throws Exception {
-//        int count = bullet.getCount();
         while ((bullet.getX() > -14) && (bullet.getX() < 590)
                 && (bullet.getY() > -14) && (bullet.getY() < 590)) {
             if (bullet.getDirection() == Direction.UP) {
@@ -415,35 +363,13 @@ public class ActionField extends JPanel {
         return false;
     }
 
-    // Check Interception String, Quadrant
-//    private boolean checkInterception(String object, String quadrant) {
-//        int oy = Integer.parseInt(object.split("_")[0]);
-//        int ox = Integer.parseInt(object.split("_")[1]);
-//
-//        int qy = Integer.parseInt(quadrant.split("_")[0]);
-//        int qx = Integer.parseInt(quadrant.split("_")[1]);
-//
-//        if (oy >= 0 && oy < 9 && ox >= 0 && ox < 9) {
-//            if (oy == qy && ox == qx) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-    // Get quadrant, ARRAY
-//    public int[] getCoordinates(int x, int y) {
-//        int[] coordinates = {x, y};
-//        return coordinates;
-//    }
-
     public String getQuadrant(int x, int y) {
         // input data should be correct
         return y / 64 + "_" + x / 64;
     }
 
     // writing to file
-    public synchronized void writeToFile(Action action, Tank tank) {
+    public void writeToFile(Action action, Tank tank) {
 
         BufferedWriter output;
         try {
@@ -478,7 +404,6 @@ public class ActionField extends JPanel {
             action = Action.TURN_DOWN;
             return action;
         }
-
         return action;
     }
 

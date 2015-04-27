@@ -23,8 +23,33 @@ public abstract class AbstractTank implements Tank {
     private int x;
     private int y;
     private boolean destroyed;
+    private boolean auto = true;
+    private int step = 0;
     private BattleField bf;
-    Action action = Action.NONE;
+    private Action action = Action.NONE;
+    private Action[] actoins = new Action[]{
+            Action.TURN_LEFT,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_DOWN,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_RIGHT,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_DOWN,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_RIGHT,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_DOWN,
+            Action.FIRE,
+            Action.MOVE,
+            Action.TURN_LEFT,
+            Action.FIRE,
+            Action.MOVE,
+    };
 //    Action[] acts = {Action.NONE, Action.NONE};    // for action array
 
     public void setAction(Action action) {
@@ -32,12 +57,23 @@ public abstract class AbstractTank implements Tank {
         this.action = action;
     }
 
+    private Action getNextAction() {
+        Action action2;
+        if (step >= actoins.length) {
+            step = 0;
+        }
+        action2 = actoins[step];
+        step +=1;
+        return action2;
+    }
+
     public Action setUp() {
-//        Action action0 = acts[0];                 // for action array
-//        acts[0] = acts[1];                        // for action array
-//        acts[1] = Action.NONE;                    // for action array
-//        return action0;
-        return action;
+        Action action1;
+        if (auto) {
+            action1 = getNextAction();
+        } else action1 = this.action;
+        this.action = Action.NONE;
+        return action1;
     }
 
     protected Color tankColor;
@@ -111,6 +147,11 @@ public abstract class AbstractTank implements Tank {
             bulletY = y + 25;
         }
         return new Bullet(bulletX, bulletY, direction);
+    }
+
+    @Override// set autoPlayer
+    public void setAuto(boolean auto) {
+        this.auto = auto;
     }
 
     @Override // Check is Tank destroyed

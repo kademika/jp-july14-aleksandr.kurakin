@@ -14,6 +14,8 @@ public interface Tank extends Drawable, Destroyable {
 
 //    public void move();
 
+    public void setAuto(boolean auto);
+
     public void turn(Direction direction);
 
     public Bullet fire();

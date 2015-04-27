@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class SimpleClient {
     static Socket socket;
-    ObjectOutputStream clientOut;
-    ObjectInputStream clientIn;
+    private ObjectOutputStream clientOut;
+    private ObjectInputStream clientIn;
 
     String str = "SELECT  purchases.purchaseID, customers.name, bird_storage.type_name, purchases.quantity,purchases.purchase_date FROM purchases" +
             "" +
@@ -25,7 +25,6 @@ public class SimpleClient {
             "  on purchases.birdID=bird_storage.birdID";
 
     public void SimpleClient() {
-
     }
 
     public void startClient() throws IOException, ClassNotFoundException {

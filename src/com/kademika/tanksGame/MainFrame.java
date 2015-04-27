@@ -39,7 +39,7 @@ public class MainFrame extends JFrame {
         this.revalidate();
         this.pack();
         af.setVisible(true);
-        af.setUpUserTank(userTank);
+        af.setUpUserTankSingleGame(userTank);
         try {
             af.runTheGameMT();
         } catch (Exception e1) {
