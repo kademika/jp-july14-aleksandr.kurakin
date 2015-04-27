@@ -1,6 +1,8 @@
 package com.kademika.tanksGame;
 
 import com.kademika.tanksGame.fieldObjects.*;
+import com.kademika.tanksGame.net.Client;
+import com.kademika.tanksGame.net.Server;
 import com.kademika.tanksGame.tanks.*;
 import com.kademika.tanksGame.tanks.Action;
 
@@ -17,11 +19,13 @@ public class ActionField extends JPanel {
     }
 
     private boolean COLORDED_MODE = false;
+    private boolean multiplayer = false;
+    private boolean server = false;
     private MainFrame frame;
     private BattleField battleField;
     private Tank defender;
     private Tank aggressor;
-    private Tank autoTank;
+//    private Tank autoTank;
     private Tank userTank;
     private volatile List<Bullet> bullets = new ArrayList<>();
     private File history = new File("history.txt");
@@ -68,56 +72,116 @@ public class ActionField extends JPanel {
     }
 
     // set up Tanks user/auto for single game
-    public void setUpUserTankSingleGame(String userTank) {
+    public void setUpSingleGame(String userTank) {
         if (userTank.equals("Aggressor")) {
             this.userTank = aggressor;
-            this.autoTank = defender;
+//            this.autoTank = defender;
             defender.setAuto(true);
             aggressor.setAuto(false);
         } else {
             this.userTank = defender;
-            this.autoTank = aggressor;
+//            this.autoTank = aggressor;
             defender.setAuto(false);
             aggressor.setAuto(true);
         }
     }
 
-    public void setAction(KeyEvent event) {
+    public void setUpMultiplayerGameServer(String userTank){
+        this.multiplayer = true;
+        this.server = true;
+        Server serv = new Server();
+        serv.setMainFrame(frame);
+//        serv.setUserTank(userTank);
+        if (userTank.equals("Aggressor")) {
+            this.userTank = aggressor;
+            serv.setUpClientTank(defender);
+            serv.setUserTank(aggressor);
+            defender.setAuto(false);
+            aggressor.setAuto(false);
+        } else {
+            this.userTank = defender;
+            serv.setUpClientTank(aggressor);
+            serv.setUserTank(defender);
+            defender.setAuto(false);
+            aggressor.setAuto(false);
+        }
+        serv.start();
+    }
+
+    public void setUpMultiplayerGameClient(String address){
+        this.multiplayer = true;
+        this.server = false;
+        Client client = new Client();
+        client.setMainFrame(frame);
+    }
+
+    public void recogniseKeyEvent(KeyEvent event) {
         try {
             switch (event.getKeyCode()) {
                 case KeyEvent.VK_UP:
                     if (!(userTank.getDirection() == Direction.UP)) { // method
-                        userTank.setAction(Action.TURN_UP);
+                        sendAction(Action.TURN_UP);
                     } else
-                        userTank.setAction(Action.MOVE);
+                        sendAction(Action.MOVE);
                     break;
                 case KeyEvent.VK_RIGHT:
                     if (!(userTank.getDirection() == Direction.RIGHT)) {
-                        userTank.setAction(Action.TURN_RIGHT);
+                        sendAction(Action.TURN_RIGHT);
                     } else
-                        userTank.setAction(Action.MOVE);
+                        sendAction(Action.MOVE);
                     break;
                 case KeyEvent.VK_LEFT:
 
                     if (!(userTank.getDirection() == Direction.LEFT)) {
-                        userTank.setAction(Action.TURN_LEFT);
+                        sendAction(Action.TURN_LEFT);
                     } else
-                        userTank.setAction(Action.MOVE);
+                        sendAction(Action.MOVE);
                     break;
                 case KeyEvent.VK_DOWN:
                     if (!(userTank.getDirection() == Direction.DOWN)) {
-                        userTank.setAction(Action.TURN_DOWN);
+                        sendAction(Action.TURN_DOWN);
                     } else
-                        userTank.setAction(Action.MOVE);
+                        sendAction(Action.MOVE);
                     break;
                 case KeyEvent.VK_SPACE:
-                    processAction(Action.FIRE, userTank);
-//                    userTank.setAction(Action.FIRE);
+                    sendAction(Action.FIRE);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    public void sendAction(Action action){
+        try {
+            if (action.equals(Action.FIRE)) {
+                processAction(Action.FIRE, userTank);
+            } else userTank.setAction(action);
+            // check game mode & server/client and send action to network
+            if (multiplayer && server){
+
+            } else if(multiplayer && !server){
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setUserTank(Tank userTank) {
+        this.userTank = userTank;
+    }
+
+    public void setMultiplayer(boolean multiplayer) {
+        this.multiplayer = multiplayer;
+    }
+
+    public void setServer(boolean server) {
+        this.server = server;
+    }
+
+//    private void sendToNet(Action action){
+//
+//    }
 
     //Run game in multi thread
     void runTheGameMT() throws Exception {
@@ -221,8 +285,6 @@ public class ActionField extends JPanel {
         } else if (a == Action.TURN_DOWN) {
             processTurn(t, Direction.DOWN);
         }
-//        sendToNet(a, t); // Sending Action and Tank to Net
-//        writeToFile(a, t);
     }
 
     // Process Turn
@@ -272,7 +334,7 @@ public class ActionField extends JPanel {
                 }
             }
 //            else return false; // This can be a mistake!!!
-            while (covered < 64) { //                                   64 was
+            while (covered < 64) {
                 if (direction == Direction.UP) {
                     tank.updateY(-step);
                 } else if (direction == Direction.DOWN) {
@@ -329,21 +391,16 @@ public class ActionField extends JPanel {
             BFObject bfObject = battleField.scanQuadrant(v, h);
             if (!bfObject.isDestroyed() && !(bfObject instanceof Blank) && !(bfObject instanceof Water)) {
                 battleField.destroyObject(v, h);
-//                bullet.destroy();
                 return true;
             }
             // check aggressor
             if (!aggressor.isDestroyed() && checkInterception(aggressorCoordinates, bulletCoordinateInt)) {
                 aggressor.destroy();
-//                bullet.destroy();
-                System.out.println("Aggressor is destroyed");
                 return true;
             }
             // check defender
             if (!defender.isDestroyed() && checkInterception(defenderCoordinates, bulletCoordinateInt)) {
                 defender.destroy();
-//                bullet.destroy();
-                System.out.println("Defender is destroyed ");
                 return true;
             }
         }

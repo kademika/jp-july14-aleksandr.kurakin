@@ -3,8 +3,9 @@ package com.kademika.tanksGame.tanks;
 import com.kademika.tanksGame.BattleField;
 import com.kademika.tanksGame.Direction;
 import java.awt.Color;
+import java.io.Serializable;
 
-public class T34 extends AbstractTank {
+public class T34 extends AbstractTank implements Serializable {
     protected int armor = 2;
     // Constructor with 128 512 point Tank, only BF need to create instance
     public T34(BattleField bf) {
@@ -23,5 +24,11 @@ public class T34 extends AbstractTank {
 
     public String getName() {
         return "T34";
+    }
+
+    @Override
+    public void destroy(){
+        super.destroy();
+        System.out.println("Defender is destroyed ");
     }
 }

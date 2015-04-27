@@ -20,7 +20,7 @@ public class MainFrame extends JFrame {
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                af.setAction(e);
+                af.recogniseKeyEvent(e);
                 System.out.println("Pressed from MF");
             }
         });
@@ -39,7 +39,48 @@ public class MainFrame extends JFrame {
         this.revalidate();
         this.pack();
         af.setVisible(true);
-        af.setUpUserTankSingleGame(userTank);
+        af.setUpSingleGame(userTank);
+        try {
+            af.runTheGameMT();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    public void waitForConnectionS(String userTank){
+        JPanel waitForConnection = new JPanel();
+        waitForConnection.setLayout(new GridBagLayout());
+        JLabel wait = new JLabel("wait for connection...");
+        waitForConnection.add(wait, new GridBagConstraints(
+                0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+        this.getContentPane().removeAll();
+        this.getContentPane().add(waitForConnection);
+        this.revalidate();
+        this.pack();
+        waitForConnection.setVisible(true);
+        af.setUpMultiplayerGameServer(userTank);
+    }
+
+    public void waitForConnectionC(String address){
+        JPanel waitForConnection = new JPanel();
+        waitForConnection.setLayout(new GridBagLayout());
+        JLabel wait = new JLabel("wait for connection...");
+        waitForConnection.add(wait, new GridBagConstraints(
+                0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+        this.getContentPane().removeAll();
+        this.getContentPane().add(waitForConnection);
+        this.revalidate();
+        this.pack();
+        waitForConnection.setVisible(true);
+        af.setUpMultiplayerGameClient(address);
+    }
+
+    public void loadAfMp(){
+        this.getContentPane().removeAll();
+        this.getContentPane().add(af);
+        this.revalidate();
+        this.pack();
+        af.setVisible(true);
         try {
             af.runTheGameMT();
         } catch (Exception e1) {
@@ -70,7 +111,11 @@ public class MainFrame extends JFrame {
         String[] items = {"Aggressor", "Defender"};
         final JComboBox patternList = new JComboBox(items);
         JButton buttonStart = new JButton("Start the game");
-        JButton buttonExit = new JButton("EXIT");
+        JButton buttonStartMP = new JButton("Multiplayer game");
+        JLabel enterIP = new JLabel("Enter IP:port");
+        final JTextField address = new JTextField();
+        address.setColumns(20);
+        JButton buttonJoinGame = new JButton("Join game");
 
         sp.add(lName, new GridBagConstraints(
                 0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
@@ -78,9 +123,14 @@ public class MainFrame extends JFrame {
                 0, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
         sp.add(buttonStart, new GridBagConstraints(
                 0, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
-        sp.add(buttonExit, new GridBagConstraints(
+        sp.add(buttonStartMP, new GridBagConstraints(
                 0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
-
+        sp.add(enterIP, new GridBagConstraints(
+                0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+        sp.add(address, new GridBagConstraints(
+                0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+        sp.add(buttonJoinGame, new GridBagConstraints(
+                0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
         buttonStart.addActionListener(new ActionListener() {
             @Override
@@ -89,11 +139,18 @@ public class MainFrame extends JFrame {
             }
         });
 
-        buttonExit.addActionListener(new ActionListener() {
+        buttonStartMP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                waitForConnectionS(patternList.getSelectedItem().toString());
             }
+        });
 
+        buttonJoinGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                waitForConnectionC(address.getText());
+            }
         });
 
         return sp;

@@ -3,8 +3,9 @@ package com.kademika.tanksGame.tanks;
 import com.kademika.tanksGame.BattleField;
 import com.kademika.tanksGame.Direction;
 import java.awt.*;
+import java.io.Serializable;
 
-public class BT7 extends AbstractTank {
+public class BT7 extends AbstractTank implements Serializable{
 
     BattleField bf;
     protected int armor = 2;
@@ -31,6 +32,7 @@ public class BT7 extends AbstractTank {
         armor--;
         if (armor <= 0) {
             super.destroy();
+            System.out.println("Aggressor is destroyed");
         }
     }
 
