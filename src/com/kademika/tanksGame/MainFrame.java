@@ -189,7 +189,13 @@ public class MainFrame extends JFrame {
             }
 
         });
-//        return gop;
+
+        buttonExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
 }

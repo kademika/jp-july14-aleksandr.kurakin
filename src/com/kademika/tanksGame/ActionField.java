@@ -47,29 +47,35 @@ public class ActionField extends JPanel {
      * Write your code here.
      */
     void replay() {
-        String command;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(history));
-            while ((command = reader.readLine()) != null) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String command;
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(history));
+                    while ((command = reader.readLine()) != null) {
 //                System.out.println(command);
-                if (command.split("_", 2)[0].equals("T34")) {
-                    System.out.println(command.split("_", 2)[0] + " T34");
-                    processAction(checkAction(command.split("_", 2)[1]), defender);
-                    System.out.println(checkAction(command.split("_", 2)[1]));
+                        if (command.split("_", 2)[0].equals("T34")) {
+                            System.out.println(command.split("_", 2)[0] + " T34");
+                            processAction(checkAction(command.split("_", 2)[1]), defender);
+                            System.out.println(checkAction(command.split("_", 2)[1]));
 
-                } else if (command.split("_", 2)[0].equals("BT7")) {
-                    System.out.println(command.split("_", 2)[0] + " BT7");
-                    processAction(checkAction(command.split("_", 2)[1]), aggressor);
-                    System.out.println(checkAction(command.split("_", 2)[1]));
+                        } else if (command.split("_", 2)[0].equals("BT7")) {
+                            System.out.println(command.split("_", 2)[0] + " BT7");
+                            processAction(checkAction(command.split("_", 2)[1]), aggressor);
+                            System.out.println(checkAction(command.split("_", 2)[1]));
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }).start();
+
 
     }
 
