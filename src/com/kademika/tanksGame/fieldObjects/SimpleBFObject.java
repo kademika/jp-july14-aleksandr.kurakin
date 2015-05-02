@@ -1,11 +1,12 @@
 package com.kademika.tanksGame.fieldObjects;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * Created by kurakinaleksandr on 17.09.14.
  */
-public abstract class SimpleBFObject implements BFObject {
+public abstract class SimpleBFObject implements BFObject, Serializable {
 
     // current position on BF
     private int x;

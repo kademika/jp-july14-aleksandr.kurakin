@@ -3,10 +3,11 @@ package com.kademika.tanksGame.tanks;
 import com.kademika.tanksGame.*;
 
 import java.awt.*;
+import java.io.Serializable;
 
 //import java.util.Random;
 
-public abstract class AbstractTank implements Tank {
+public abstract class AbstractTank implements Tank, Serializable{
 
     private Boolean iCanMoveForward = true;
 

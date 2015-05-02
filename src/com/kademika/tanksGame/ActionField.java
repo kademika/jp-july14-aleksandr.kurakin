@@ -25,12 +25,14 @@ public class ActionField extends JPanel {
     private BattleField battleField;
     private Tank defender;
     private Tank aggressor;
-//    private Tank autoTank;
     private Tank userTank;
+    private Tank clientTank;
     private volatile List<Bullet> bullets = new ArrayList<>();
     private File history = new File("history.txt");
     private int step = 1;
     private volatile int bulletCount = 0;
+    private Server serv;
+    private Client client;
 
     // ActionField constructor without parameter, ARRAY
     public ActionField() throws Exception {
@@ -71,48 +73,68 @@ public class ActionField extends JPanel {
 
     }
 
+    public void callLoadAfMp(){
+        frame.loadAfMp();
+    }
+
     // set up Tanks user/auto for single game
     public void setUpSingleGame(String userTank) {
         if (userTank.equals("Aggressor")) {
             this.userTank = aggressor;
-//            this.autoTank = defender;
-            defender.setAuto(true);
-            aggressor.setAuto(false);
+            this.clientTank = defender;
         } else {
             this.userTank = defender;
-//            this.autoTank = aggressor;
-            defender.setAuto(false);
-            aggressor.setAuto(true);
+            this.clientTank = aggressor;
         }
+        this.userTank.setAuto(false);
+        this.clientTank.setAuto(true);
     }
 
     public void setUpMultiplayerGameServer(String userTank){
         this.multiplayer = true;
         this.server = true;
-        Server serv = new Server();
-        serv.setMainFrame(frame);
-//        serv.setUserTank(userTank);
+        serv = new Server();
+        serv.setAf(this);
         if (userTank.equals("Aggressor")) {
             this.userTank = aggressor;
-            serv.setUpClientTank(defender);
-            serv.setUserTank(aggressor);
+            this.clientTank = defender;
+            serv.setClientTank(defender);
             defender.setAuto(false);
             aggressor.setAuto(false);
         } else {
             this.userTank = defender;
-            serv.setUpClientTank(aggressor);
-            serv.setUserTank(defender);
+            this.clientTank = aggressor;
+            serv.setClientTank(aggressor);
             defender.setAuto(false);
             aggressor.setAuto(false);
         }
         serv.start();
     }
 
+    public void setUpClientTank(Action action){
+        clientTank.setAction(action);
+    }
+
     public void setUpMultiplayerGameClient(String address){
+        defender.setAuto(false);
+        aggressor.setAuto(false);
         this.multiplayer = true;
         this.server = false;
-        Client client = new Client();
-        client.setMainFrame(frame);
+        client = new Client();
+        client.setAddress(address);
+        client.setAf(this);
+        client.start();
+    }
+
+    // From Client only
+    public void setUserTank(Tank userTank) {
+        if(userTank instanceof T34){
+        this.userTank = defender;
+            this.clientTank = aggressor;
+        } else if (userTank instanceof BT7){
+            this.userTank = aggressor;
+            this.clientTank = defender;
+        }
     }
 
     public void recogniseKeyEvent(KeyEvent event) {
@@ -158,30 +180,14 @@ public class ActionField extends JPanel {
             } else userTank.setAction(action);
             // check game mode & server/client and send action to network
             if (multiplayer && server){
-
+                serv.sendCommand(action);                   // Server send action
             } else if(multiplayer && !server){
-
+                client.sendCommand(action);                 // Client send action
             }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-
-    public void setUserTank(Tank userTank) {
-        this.userTank = userTank;
-    }
-
-    public void setMultiplayer(boolean multiplayer) {
-        this.multiplayer = multiplayer;
-    }
-
-    public void setServer(boolean server) {
-        this.server = server;
-    }
-
-//    private void sendToNet(Action action){
-//
-//    }
 
     //Run game in multi thread
     void runTheGameMT() throws Exception {

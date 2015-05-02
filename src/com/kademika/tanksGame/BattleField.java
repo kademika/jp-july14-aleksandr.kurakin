@@ -4,8 +4,9 @@ import com.kademika.tanksGame.fieldObjects.*;
 import com.kademika.tanksGame.interfaces.Drawable;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 
-public class BattleField implements Drawable {
+public class BattleField implements Drawable, Serializable {
 
     public static final String BRICK = "B";
     public static final String EAGLE = "E";
