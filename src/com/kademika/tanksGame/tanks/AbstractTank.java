@@ -7,7 +7,8 @@ import java.io.Serializable;
 
 //import java.util.Random;
 
-public abstract class AbstractTank implements Tank, Serializable{
+
+public abstract class AbstractTank implements Tank, Serializable {
 
     private Boolean iCanMoveForward = true;
 
@@ -51,10 +52,9 @@ public abstract class AbstractTank implements Tank, Serializable{
             Action.FIRE,
             Action.MOVE,
     };
-//    Action[] acts = {Action.NONE, Action.NONE};    // for action array
+
 
     public void setAction(Action action) {
-//        acts[1] = action;  // for action array
         this.action = action;
     }
 
@@ -64,7 +64,7 @@ public abstract class AbstractTank implements Tank, Serializable{
             step = 0;
         }
         action2 = actoins[step];
-        step +=1;
+        step += 1;
         return action2;
     }
 
@@ -94,39 +94,6 @@ public abstract class AbstractTank implements Tank, Serializable{
 
     @Override // Turn
     public void turn(Direction direction) {
-//        if (direction == Direction.RIGHT) {
-//
-//            if (this.direction == Direction.UP) {
-//                this.direction = Direction.RIGHT;
-//                return;
-//            } else if (this.direction == Direction.RIGHT) {
-//                this.direction = direction.DOWN;
-//                return;
-//            } else if (this.direction == Direction.DOWN) {
-//                this.direction = Direction.LEFT;
-//                return;
-//            } else if (this.direction == Direction.LEFT) {
-//                this.direction = Direction.UP;
-//                return;
-//            }
-//            return;
-//
-//        } else if (direction == Direction.LEFT) {
-//
-//            if (this.direction == Direction.UP) {
-//                this.direction = Direction.LEFT;
-//                return;
-//            } else if (this.direction == Direction.LEFT) {
-//                this.direction = Direction.LEFT;
-//                return;
-//            } else if (this.direction == Direction.DOWN) {
-//                this.direction = Direction.RIGHT;
-//                return;
-//            } else if (this.direction == Direction.RIGHT) {
-//                this.direction = direction.UP;
-//                return;
-//            }
-//        }
         this.direction = direction;
     }
 

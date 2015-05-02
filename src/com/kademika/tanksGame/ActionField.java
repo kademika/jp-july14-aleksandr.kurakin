@@ -129,12 +129,16 @@ public class ActionField extends JPanel {
     // From Client only
     public void setUserTank(Tank userTank) {
         if(userTank instanceof T34){
-        this.userTank = defender;
+            this.userTank = defender;
             this.clientTank = aggressor;
         } else if (userTank instanceof BT7){
             this.userTank = aggressor;
             this.clientTank = defender;
         }
+    }
+
+    public void recogniseKeyReleased(KeyEvent e){
+        sendAction(Action.NONE);
     }
 
     public void recogniseKeyEvent(KeyEvent event) {
@@ -209,7 +213,7 @@ public class ActionField extends JPanel {
                     try {
                         processAction(action, aggressor);
                         writeToFile(action, aggressor); // отдельный поток
-                        Thread.sleep(100);
+//                        Thread.sleep(100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -230,7 +234,7 @@ public class ActionField extends JPanel {
                     try {
                         processAction(action, defender);
                         writeToFile(action, defender);
-                        Thread.sleep(100);
+//                        Thread.sleep(100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -354,7 +358,7 @@ public class ActionField extends JPanel {
                 Thread.sleep(tank.getSpeed());
             }
         }
-        defender.setAction(Action.NONE);
+//        defender.setAction(Action.NONE);
         return true;
     }
 

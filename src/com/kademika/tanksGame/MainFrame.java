@@ -16,12 +16,17 @@ public class MainFrame extends JFrame {
         af = new ActionField();
         af.setMf(this);
         this.setLocation(650, 150);
-        this.setMinimumSize(new Dimension(576, 576 + 22));
+        this.setMinimumSize(new Dimension(576, 576 + 22));  //Check vertical size - there is bug in Windows
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 af.recogniseKeyEvent(e);
                 System.out.println("Pressed from MF");
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                af.recogniseKeyReleased(e);
             }
         });
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -47,7 +52,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public void waitForConnectionS(String userTank){
+    public void waitForConnectionS(String userTank) {
         JPanel waitForConnection = new JPanel();
         waitForConnection.setLayout(new GridBagLayout());
         JLabel wait = new JLabel("wait for connection...");
@@ -61,7 +66,7 @@ public class MainFrame extends JFrame {
         af.setUpMultiplayerGameServer(userTank);
     }
 
-    public void waitForConnectionC(String address){
+    public void waitForConnectionC(String address) {
         JPanel waitForConnection = new JPanel();
         waitForConnection.setLayout(new GridBagLayout());
         JLabel wait = new JLabel("wait for connection...");
@@ -75,7 +80,7 @@ public class MainFrame extends JFrame {
         af.setUpMultiplayerGameClient(address);
     }
 
-    public void loadAfMp(){
+    public void loadAfMp() {
         this.getContentPane().removeAll();
         this.getContentPane().add(af);
         this.revalidate();
@@ -114,7 +119,7 @@ public class MainFrame extends JFrame {
         JButton buttonStartMP = new JButton("Multiplayer game");
         JLabel enterIP = new JLabel("Enter IP:port");
         final JTextField address = new JTextField();
-        address.setColumns(20);
+        address.setColumns(15);
         JButton buttonJoinGame = new JButton("Join game");
 
         sp.add(lName, new GridBagConstraints(
