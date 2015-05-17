@@ -19,7 +19,7 @@ public class MainFrame extends JFrame {
         this.setMinimumSize(new Dimension(576, 576 + 22));  //Check vertical size - there is bug in Windows
         this.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {    // keyPressed(KeyEvent e)
                 af.recogniseKeyEvent(e);
                 System.out.println("Pressed from MF");
             }
@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
         af.setVisible(true);
         af.setUpSingleGame(userTank);
         try {
-            af.runTheGameMT();
+            af.runTheGameSP();
         } catch (Exception e1) {
             e1.printStackTrace();
         }
@@ -80,16 +80,24 @@ public class MainFrame extends JFrame {
         af.setUpMultiplayerGameClient(address);
     }
 
-    public void loadAfMp() {
+    public void loadAfMp(String t) {
         this.getContentPane().removeAll();
         this.getContentPane().add(af);
         this.revalidate();
         this.pack();
         af.setVisible(true);
-        try {
-            af.runTheGameMT();
-        } catch (Exception e1) {
-            e1.printStackTrace();
+        if (t == "a") {
+            try {
+                af.runTheGameMTA();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        } else if (t == "d") {
+            try {
+                af.runTheGameMTD();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -105,7 +113,6 @@ public class MainFrame extends JFrame {
             e1.printStackTrace();
         }
     }
-
 
     public JPanel startPanel() {
 
@@ -161,7 +168,6 @@ public class MainFrame extends JFrame {
         return sp;
     }
 
-
     public void gameOverPanel() { //JPanel
         JPanel gop = new JPanel();
         gop.setLayout(new GridBagLayout());
@@ -169,8 +175,8 @@ public class MainFrame extends JFrame {
         JButton buttonReplay = new JButton("Replay");
         JButton buttonExit = new JButton("EXIT");
 
-        gop.add(buttonReplay, new GridBagConstraints(
-                0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+//        gop.add(buttonReplay, new GridBagConstraints(
+//                0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
         gop.add(buttonExit, new GridBagConstraints(
                 0, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
@@ -193,6 +199,7 @@ public class MainFrame extends JFrame {
         buttonExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 System.exit(0);
             }
         });

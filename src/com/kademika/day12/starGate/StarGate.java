@@ -175,51 +175,6 @@ public class StarGate extends JPanel {
         g.fillRect(gates.bottomX, gates.bottomY, gates.bottomWidth, gates.doorHeight);
     }
 
-    public class Gates {
-
-        public boolean isOpen;
-        public boolean isClosed;
-        public int topY;
-        public int topX;
-        public int bottomY;
-        public int bottomX;
-        public int openTopY;
-        public int openBottomY;
-        public int topWidth;
-        public int bottomWidth;
-        public int doorHeight;
-        public Color color;
-
-
-        public Gates() {
-            isOpen = false;
-
-            topY = 120;
-            topX = 200;
-            bottomY = 170;
-            bottomX = 200;
-            openTopY = 80;
-            openBottomY = 210;
-            topWidth = 10;
-            bottomWidth = 10;
-            doorHeight = 50;
-            color = Color.GREEN;
-        }
-    }
-
-    public class Ship {
-        public int x;
-        public int y;
-        public int radius;
-        public Color color;
-
-        public Ship() {
-            this.x = 10;
-            this.y = 170;
-            this.radius = 10;
-            this.color = Color.ORANGE;
-        }
-    }
 
 
 }

@@ -19,8 +19,8 @@ public class ActionField extends JPanel {
     }
 
     private boolean COLORDED_MODE = false;
-    private boolean multiplayer = false;
-    private boolean server = false;
+    private boolean isMultiplayer = false;
+    private boolean isServer = false;
     private MainFrame frame;
     private BattleField battleField;
     private Tank defender;
@@ -31,7 +31,7 @@ public class ActionField extends JPanel {
     private File history = new File("history.txt");
     private int step = 1;
     private volatile int bulletCount = 0;
-    private Server serv;
+    private Server server;
     private Client client;
 
     // ActionField constructor without parameter, ARRAY
@@ -47,40 +47,37 @@ public class ActionField extends JPanel {
      * Write your code here.
      */
     void replay() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String command;
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(history));
-                    while ((command = reader.readLine()) != null) {
+        String command;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(history));
+            while ((command = reader.readLine()) != null) {
 //                System.out.println(command);
-                        if (command.split("_", 2)[0].equals("T34")) {
-                            System.out.println(command.split("_", 2)[0] + " T34");
-                            processAction(checkAction(command.split("_", 2)[1]), defender);
-                            System.out.println(checkAction(command.split("_", 2)[1]));
+                if (command.split("_", 2)[0].equals("T34")) {
+                    System.out.println(command.split("_", 2)[0] + " T34");
+                    processAction(checkAction(command.split("_", 2)[1]), defender);
+                    System.out.println(checkAction(command.split("_", 2)[1]));
 
-                        } else if (command.split("_", 2)[0].equals("BT7")) {
-                            System.out.println(command.split("_", 2)[0] + " BT7");
-                            processAction(checkAction(command.split("_", 2)[1]), aggressor);
-                            System.out.println(checkAction(command.split("_", 2)[1]));
-                        }
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else if (command.split("_", 2)[0].equals("BT7")) {
+                    System.out.println(command.split("_", 2)[0] + " BT7");
+                    processAction(checkAction(command.split("_", 2)[1]), aggressor);
+                    System.out.println(checkAction(command.split("_", 2)[1]));
                 }
             }
-        }).start();
-
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public void callLoadAfMp(){
-        frame.loadAfMp();
+    public void callLoadAfMp() {
+        if (userTank == aggressor){
+            frame.loadAfMp("a");
+        } else frame.loadAfMp("d");
+
     }
 
     // set up Tanks user/auto for single game
@@ -96,36 +93,30 @@ public class ActionField extends JPanel {
         this.clientTank.setAuto(true);
     }
 
-    public void setUpMultiplayerGameServer(String userTank){
-        this.multiplayer = true;
-        this.server = true;
-        serv = new Server();
-        serv.setAf(this);
+    public void setUpMultiplayerGameServer(String userTank) {
+        this.isMultiplayer = true;
+        this.isServer = true;
+        server = new Server();
+        server.setAf(this);
+        defender.setAuto(false);
+        aggressor.setAuto(false);
         if (userTank.equals("Aggressor")) {
             this.userTank = aggressor;
             this.clientTank = defender;
-            serv.setClientTank(defender);
-            defender.setAuto(false);
-            aggressor.setAuto(false);
+            server.setClientTank(defender);
         } else {
             this.userTank = defender;
             this.clientTank = aggressor;
-            serv.setClientTank(aggressor);
-            defender.setAuto(false);
-            aggressor.setAuto(false);
+            server.setClientTank(aggressor);
         }
-        serv.start();
+        server.start();
     }
 
-    public void setUpClientTank(Action action){
-        clientTank.setAction(action);
-    }
-
-    public void setUpMultiplayerGameClient(String address){
+    public void setUpMultiplayerGameClient(String address) {
         defender.setAuto(false);
         aggressor.setAuto(false);
-        this.multiplayer = true;
-        this.server = false;
+        this.isMultiplayer = true;
+        this.isServer = false;
         client = new Client();
         client.setAddress(address);
         client.setAf(this);
@@ -134,16 +125,18 @@ public class ActionField extends JPanel {
 
     // From Client only
     public void setUserTank(Tank userTank) {
-        if(userTank instanceof T34){
+        if (userTank instanceof T34) {
             this.userTank = defender;
             this.clientTank = aggressor;
-        } else if (userTank instanceof BT7){
+
+        } else if (userTank instanceof BT7) {
             this.userTank = aggressor;
             this.clientTank = defender;
         }
+//        client.setClientTank(clientTank);   // HERE
     }
 
-    public void recogniseKeyReleased(KeyEvent e){
+    public void recogniseKeyReleased(KeyEvent e) {
         sendAction(Action.NONE);
     }
 
@@ -183,28 +176,60 @@ public class ActionField extends JPanel {
         }
     }
 
-    public void sendAction(Action action){
+    public void sendActionToNet (Action action){
+        try {
+
+            // check game mode & server/client and send action to network
+            if (isMultiplayer && isServer) {
+                server.sendCommand(action);                   // Server send action
+            } else if (isMultiplayer && !isServer) {
+                client.sendCommand(action);                 // Client send action
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Do we need this method??
+    public void sendAction(Action action) {
         try {
             if (action.equals(Action.FIRE)) {
                 processAction(Action.FIRE, userTank);
+//            } else if (action.equals(Action.MOVE)) {
+//                processAction(Action.MOVE, userTank);
             } else userTank.setAction(action);
-            // check game mode & server/client and send action to network
-            if (multiplayer && server){
-                serv.sendCommand(action);                   // Server send action
-            } else if(multiplayer && !server){
-                client.sendCommand(action);                 // Client send action
-            }
-        }catch (Exception e){
+//                processAction(action, userTank);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     //Run game in multi thread
-    void runTheGameMT() throws Exception {
+    public void runTheGameSP() throws Exception {
         //clear the history file
         clearHistory(new File("history.txt"));
 
         aggressorAction();
+        defenderAction();
+        screenUpdate();
+    }
+
+    //Run game in multi thread
+    public void runTheGameMTA() throws Exception {
+        //clear the history file
+        clearHistory(new File("history.txt"));
+
+        aggressorAction();
+//        defenderAction();
+        screenUpdate();
+    }
+
+    //Run game in multi thread
+    public void runTheGameMTD() throws Exception {
+        //clear the history file
+        clearHistory(new File("history.txt"));
+
+//        aggressorAction();
         defenderAction();
         screenUpdate();
     }
@@ -268,19 +293,32 @@ public class ActionField extends JPanel {
     }
 
     // Process Action
-    private void processAction(Action a, Tank t) throws Exception {
-
+    public void processAction(Action a, Tank t) throws Exception {
+        final Action action = a;
+        if (t == userTank) {
+            sendActionToNet(action);
+        }
+        final Tank tank = t;
         final Bullet bullet;
 
         if (a == Action.MOVE) {
-            processMove(t);
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+            processMove(tank);
+//        } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
             return;
         } else if (a == Action.FIRE) {
             bullet = t.fire();
             bullet.setCount(bulletCount);
             bullets.add(bullet);
             bulletCount++;
-            new Thread(new Runnable() {
+            new Thread(new Runnable() { // remove new Thread when server will work
                 @Override
                 public void run() {
                     try {
@@ -492,7 +530,7 @@ public class ActionField extends JPanel {
         }
     }
 
-    @Override
+    @Override   // Do not touch this method!!!
     protected void paintComponent(Graphics g) {
 
         super.paintComponent(g);
@@ -522,9 +560,9 @@ public class ActionField extends JPanel {
         aggressor.draw(g);
         for (int j = 0; j < bullets.size(); j++) {
             Bullet bullet = bullets.get(j);
-            if ((bullet.getX() > -14 && bullet.getX() < 590) && (bullet.getY() > -14 && bullet.getY() < 590)) {
-                bullet.draw(g);
-            }
+//            if ((bullet.getX() > -14 && bullet.getX() < 590) && (bullet.getY() > -14 && bullet.getY() < 590)) {
+            bullet.draw(g);
+//            }
         }
 
     }
