@@ -21,6 +21,7 @@ public class ActionField extends JPanel {
     private boolean COLORDED_MODE = false;
     private boolean isMultiplayer = false;
     private boolean isServer = false;
+    private String serverAddress = "127.0.0.1";
     private MainFrame frame;
     private BattleField battleField;
     private Tank defender;
@@ -93,23 +94,37 @@ public class ActionField extends JPanel {
         this.clientTank.setAuto(true);
     }
 
-    public void setUpMultiplayerGameServer(String userTank) {
+    public void setClient(){
+
+    }
+
+    public void setUpMultiplayerGameInit(String userTank) {
         this.isMultiplayer = true;
         this.isServer = true;
         server = new Server();
-        server.setAf(this);
+        client = new Client();
+        client.setAddress(serverAddress);
+
+        server.setAf(this); // remove?
+
         defender.setAuto(false);
         aggressor.setAuto(false);
         if (userTank.equals("Aggressor")) {
             this.userTank = aggressor;
             this.clientTank = defender;
-            server.setClientTank(defender);
+            client.setUserTank(aggressor);
         } else {
             this.userTank = defender;
             this.clientTank = aggressor;
-            server.setClientTank(aggressor);
+            client.setUserTank(defender);
         }
-        server.start();
+//        server.start();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        client.start();
     }
 
     public void setUpMultiplayerGameClient(String address) {
@@ -214,7 +229,7 @@ public class ActionField extends JPanel {
         screenUpdate();
     }
 
-    //Run game in multi thread
+    //Run game in multi thread, userTank = aggressor
     public void runTheGameMTA() throws Exception {
         //clear the history file
         clearHistory(new File("history.txt"));
@@ -224,7 +239,7 @@ public class ActionField extends JPanel {
         screenUpdate();
     }
 
-    //Run game in multi thread
+    //Run game in multi thread, userTank = defender
     public void runTheGameMTD() throws Exception {
         //clear the history file
         clearHistory(new File("history.txt"));
@@ -292,7 +307,7 @@ public class ActionField extends JPanel {
         }).start();
     }
 
-    // Process Action
+    // Process Action, remove new Thread in ActionFire, when server works. This method calls only from another thread
     public void processAction(Action a, Tank t) throws Exception {
         final Action action = a;
         if (t == userTank) {
@@ -318,7 +333,7 @@ public class ActionField extends JPanel {
             bullet.setCount(bulletCount);
             bullets.add(bullet);
             bulletCount++;
-            new Thread(new Runnable() { // remove new Thread when server will work
+            new Thread(new Runnable() { // remove new Thread when server works
                 @Override
                 public void run() {
                     try {

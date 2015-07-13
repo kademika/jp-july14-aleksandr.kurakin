@@ -38,7 +38,7 @@ public class MainFrame extends JFrame {
 
     }
 
-    public void loadAF(String userTank) {
+    public void loadAFSP(String userTank) {
         this.getContentPane().removeAll();
         this.getContentPane().add(af);
         this.revalidate();
@@ -63,7 +63,7 @@ public class MainFrame extends JFrame {
         this.revalidate();
         this.pack();
         waitForConnection.setVisible(true);
-        af.setUpMultiplayerGameServer(userTank);
+        af.setUpMultiplayerGameInit(userTank);
     }
 
     public void waitForConnectionC(String address) {
@@ -147,7 +147,7 @@ public class MainFrame extends JFrame {
         buttonStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadAF(patternList.getSelectedItem().toString()); // here
+                loadAFSP(patternList.getSelectedItem().toString()); // here
             }
         });
 
