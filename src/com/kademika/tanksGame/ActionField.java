@@ -105,7 +105,7 @@ public class ActionField extends JPanel {
         client = new Client();
         client.setAddress(serverAddress);
 
-        server.setAf(this); // remove?
+//        server.setAf(this); // remove?
 
         defender.setAuto(false);
         aggressor.setAuto(false);
@@ -196,7 +196,7 @@ public class ActionField extends JPanel {
 
             // check game mode & server/client and send action to network
             if (isMultiplayer && isServer) {
-                server.sendCommand(action);                   // Server send action
+//                server.sendCommand(action);                   // Server send action
             } else if (isMultiplayer && !isServer) {
                 client.sendCommand(action);                 // Client send action
             }
