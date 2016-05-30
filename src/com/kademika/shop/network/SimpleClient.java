@@ -1,6 +1,5 @@
 package com.kademika.shop.network;
 
-import com.kademika.shop.entitys.Customer;
 import com.kademika.shop.entitys.Purchase;
 import com.kademika.shop.constants.Name;
 
@@ -16,13 +15,6 @@ public class SimpleClient {
     static Socket socket;
     private ObjectOutputStream clientOut;
     private ObjectInputStream clientIn;
-
-    String str = "SELECT  purchases.purchaseID, customers.name, bird_storage.type_name, purchases.quantity,purchases.purchase_date FROM purchases" +
-            "" +
-            "  INNER JOIN customers " +
-            "    ON purchases.customerID=customers.customersID" +
-            "  inner join bird_storage" +
-            "  on purchases.birdID=bird_storage.birdID";
 
     public void SimpleClient() {
     }
@@ -57,17 +49,16 @@ public class SimpleClient {
         }
     }
 
-    public void getReport(String report) {
+    public String[] getReport(String report) {
 
-        List<Customer> collection = new ArrayList();
+        List<String> collection = new ArrayList();
         try {
             clientOut.writeObject(report);
             clientOut.flush();
 
-
             int packageLength = clientIn.readInt();
             for (int i = 0; i < packageLength; i++) {
-                collection.add((Customer) clientIn.readObject());
+                collection.add((String) clientIn.readObject());
             }
 
         } catch (IOException
@@ -75,8 +66,14 @@ public class SimpleClient {
                 e) {
             e.printStackTrace();
         }
-        printCustomers(collection);
+        printResult(collection);
+        String[] result = new String[collection.size()];
+        for (int i = 0; i < collection.size(); i++) {
+            result[i] = collection.get(i);
+        }
+        return result;
     }
+
 
     public Name[] getCatalog() {
 
@@ -86,10 +83,10 @@ public class SimpleClient {
     }
 
     // submethod for getAllCustomers
-    public static void printCustomers(List<Customer> customers) {
+    public static void printResult(List<String> collectionResult) {
         System.out.println("--------------");
-        for (int i = 0; i < customers.size(); i++) {
-            System.out.println(customers.get(i).getName());
+        for (int i = 0; i < collectionResult.size(); i++) {
+            System.out.println(collectionResult.get(i));
         }
     }
 
@@ -117,7 +114,7 @@ public class SimpleClient {
 //           }catch (IOException e){
 //               e.printStackTrace();
 //           }
-//        printCustomers(collection);
+//        printResult(collection);
 
     //            System.out.println("Client asks server 0 - send list of customers");
 //            clientOut.writeChar(0);

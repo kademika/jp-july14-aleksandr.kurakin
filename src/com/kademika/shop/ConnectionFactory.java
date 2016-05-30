@@ -1,8 +1,11 @@
 package com.kademika.shop;
 
+import com.mysql.cj.jdbc.Driver;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 
 /**
  * Created by kurakinaleksandr on 01.03.15.
@@ -18,20 +21,26 @@ public class ConnectionFactory {
     }
 
     public static Connection getConnection() {
-        DRIVER = "com.mysql.jdbc.Driver";
-        URL = "jdbc:mysql://localhost:3306/My_first_DB";
+        DRIVER = "com.mysql.cj.jdbc.Driver";
+        URL = "jdbc:mysql://localhost:3306/My_first_DB?verifyServerCertificate=false&useSSL=false&requireSSL=false&serverTimezone=UTC&useTimezone=true";
         USER = "root";
         PASS = "";
         Connection connection = null;
         try {
+            Driver driver = new Driver();
+            DriverManager.registerDriver(driver);
 //            Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USER, PASS);
+
             connection.getTransactionIsolation();
             System.out.println("Connected.");
         } catch (SQLException  e) {
             e.printStackTrace();
         }
-       return connection;
+//        catch (ClassNotFoundException e){
+//            System.out.println("Can not connect driver");
+//        }
+        return connection;
     }
 
 }

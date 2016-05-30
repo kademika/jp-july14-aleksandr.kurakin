@@ -50,7 +50,8 @@ public class UserInterface  {
         panel.add(lName, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         panel.add(tName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, 0, new Insets(0, 0, 0, 0), 0, 0));
 
-        Name [] items =  client.getCatalog();
+        String [] items =  client.getReport("Catalog");
+//        Name [] items =  client.getCatalog();
         JLabel lProduct = new JLabel("Select bird: ");
         final JComboBox patternList = new JComboBox(items);
 

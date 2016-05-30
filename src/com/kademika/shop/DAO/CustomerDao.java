@@ -26,24 +26,22 @@ public class CustomerDao {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getSQLState());
-        }finally {
+        } finally {
 // do we need to close statement?
         }
 
     }
 
-    public List<Customer> getAllCustomers() {
-        List<Customer> customers = new ArrayList<>();
-        String getCustomersQuery = "select * from customers";
-        try{
+    public List<String> getAllCustomers() {
+        List<String> customers = new ArrayList<>();
+        String getCustomersQuery = "select name from customers";
+        try {
             Statement statement = connection.createStatement();
             ResultSet rsGetCustomers = statement.executeQuery(getCustomersQuery);
-            while (rsGetCustomers.next()){
-                Customer tmpCustomer = new Customer();
-                tmpCustomer.setName(rsGetCustomers.getString(2));
-                customers.add(tmpCustomer);
+            while (rsGetCustomers.next()) {
+                customers.add(rsGetCustomers.getString(1));
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
 
         } finally {
@@ -52,15 +50,15 @@ public class CustomerDao {
         return customers;
     }
 
-    public int getCustomerId (Customer customer){
+    public int getCustomerId(Customer customer) {
         int customerId = 0;
         String getCustomerIdQuery = "select * from customers where name = ?";
-        try{
+        try {
             PreparedStatement ps = connection.prepareStatement(getCustomerIdQuery);
             ps.setString(1, customer.getName());
             ResultSet rs = ps.executeQuery();
             customerId = rs.getInt(1);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return customerId;

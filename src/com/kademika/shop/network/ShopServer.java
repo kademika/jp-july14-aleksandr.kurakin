@@ -1,7 +1,5 @@
 package com.kademika.shop.network;
 
-import com.kademika.shop.entitys.Customer;
-
 import com.kademika.shop.entitys.Purchase;
 import com.kademika.shop.Shop;
 
@@ -16,12 +14,15 @@ import java.util.List;
  * Created by kurakinaleksandr on 19.02.15.
  */
 public class ShopServer {
-    private ObjectInputStream serverIn;
-    private ObjectOutputStream serverOut;
+    private static ObjectInputStream serverIn;
+    private static ObjectOutputStream serverOut;
 
     private Purchase prch;
     private Shop shop = null;
     private Object start;
+    private static int packetLength=0;
+    private List<String> result;
+
 
     public void ShopServer() {
 
@@ -45,7 +46,6 @@ public class ShopServer {
                     serverOut = new ObjectOutputStream(socket.getOutputStream());
 
                     while (true) {
-
                         start = serverIn.readObject();
                         checkCommand(start);
                         start = null;
@@ -67,36 +67,29 @@ public class ShopServer {
         } else if (start instanceof String & start.equals("Get all clients")) {
             System.out.println("Client request new report: " + start);
 
-            List<Customer> customers = shop.getCustomers();
-            int packetLength = customers.size();
+            result = shop.getCustomers();
+            getReport(result);
 
-            try {
-                serverOut.writeInt(packetLength);
-                for (int i = 0; i < customers.size(); i++) {
-                    serverOut.writeObject(customers.get(i));
-                }
-                System.out.println("Data transfer complete");
-                serverOut.flush(); // !!!
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } else if (start instanceof String & start.equals("Catalog")) {
+
+            result = shop.getCatalog();
+            getReport(result);
         }
-//           makeCommand(command);
+
+
     }
 
-
-//    public void makeCommand (String command){
-////        Commands cmnd = command.getCommand();
-//        if (command.equals("Get all clients")){
-//
-//        }
-//    }
-
+    private static void getReport(List<String> result) {
+        packetLength = result.size();
+        try {
+            serverOut.writeInt(packetLength);
+            for (int i = 0; i < result.size(); i++) {
+                serverOut.writeObject(result.get(i));
+            }
+            System.out.println("Data transfer complete");
+            serverOut.flush(); // !!!
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
-//                            int collectionSize = cstmrList.size();
-//                            serverOut.writeInt(collectionSize);
-//                            for (int i = 0; i < collectionSize; i++) {
-//                                serverOut.writeObject(cstmrList.get(i));
-//                            }
-//                            System.out.println("Data transfer complete");
-//                            serverOut.flush();

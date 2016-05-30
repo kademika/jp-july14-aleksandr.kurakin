@@ -44,8 +44,9 @@ public class Storages {
         try{
             Statement statement = connection.createStatement(); // into method
             ResultSet rsGetCustomers = statement.executeQuery(getCustomersQuery);
+            Customer tmpCustomer = new Customer();
             while (rsGetCustomers.next()){
-                Customer tmpCustomer = new Customer();
+//                Customer tmpCustomer = new Customer();
                 tmpCustomer.setName(rsGetCustomers.getString("name"));
                 customers.add(tmpCustomer);
             }

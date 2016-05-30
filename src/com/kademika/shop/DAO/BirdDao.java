@@ -4,6 +4,8 @@ import com.kademika.shop.ConnectionFactory;
 import com.kademika.shop.constants.Name;
 import com.kademika.shop.entitys.Purchase;
 
+import java.util.*;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +16,7 @@ import java.sql.Statement;
  */
 public class BirdDao {
     private Connection connection;
+
     public BirdDao() {
         connection = ConnectionFactory.getConnection();
     }
@@ -31,20 +34,36 @@ public class BirdDao {
             e.printStackTrace();
         }
         return birdQuantity;
-
-//        return birdStorage.getBirdBalance(name);
     }
 
-    public void birdStrgUpdate (Purchase purchase){
+    public void birdStrgUpdate(Purchase purchase) {
         int quantity = purchase.getNumberOfBirds();
         String birdName = purchase.getName().toString();
         String birdsUpdate = "update bird_storage set quantity = quantity - " + quantity + " where type_name = '" + birdName + "';";
-        try{
+        try {
             Statement statement = connection.createStatement();
             statement.execute(birdsUpdate);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<String> getCatalog() {
+        List<String> catalog = new ArrayList<>();
+        String birdBalanceQuery = "select type_name from bird_storage";
+        try {
+            Statement statement = connection.createStatement(); // into method
+            ResultSet rsBirdQuantity = statement.executeQuery(birdBalanceQuery);
+            while (rsBirdQuantity.next()) {
+                catalog.add(rsBirdQuantity.getString(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+// need to close statement?
+        }
+
+        return catalog;
     }
 }
