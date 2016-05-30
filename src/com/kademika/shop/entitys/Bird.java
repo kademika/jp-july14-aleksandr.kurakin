@@ -4,18 +4,18 @@ import com.kademika.shop.constants.Name;
 import com.kademika.shop.constants.Type;
 
 public class Bird {
-	private Name name;
+	private String name;
 	private Type type;
 	
 	private double price;
 	
-	public Bird (Name name, double price){
+	public Bird (String name, double price){
 		this.name = name;
-		if (name==Name.CHICKEN||name==Name.DUCK){
+		if (name=="CHICKEN"||name=="DUCK"){
 			this.type = Type.FARM;
-		} else if (name==Name.EAGLE||name==Name.OWL){
+		} else if (name=="EAGLE" ||name=="OWL"){
 			this.type = Type.WILD;
-		} else if (name==Name.CANARY||name==Name.PARROT){
+		} else if (name=="CANARY" ||name=="PARROT"){
 			this.type = Type.DECORATE;
 		} else System.out.println("ERROR!! Invalid bird name.");
 
@@ -23,7 +23,7 @@ public class Bird {
 		this.price = price;
 	}
 
-	public Name getName(){
+	public String getName(){
         return name;
     }
 

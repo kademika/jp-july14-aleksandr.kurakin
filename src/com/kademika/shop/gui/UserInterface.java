@@ -89,7 +89,7 @@ public class UserInterface  {
                 c.setName(tName.getText());
 
                 int qnt = Integer.parseInt(tlQuantity.getText());
-                Name birdName = (Name) patternList.getSelectedItem();
+                String birdName = (String) patternList.getSelectedItem();
                 Purchase prchs = new Purchase(c.getName(),birdName, qnt); // then transfer this Purchase with network to the shop
                 client.makePurchase(prchs);
             }

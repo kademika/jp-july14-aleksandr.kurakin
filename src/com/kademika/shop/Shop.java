@@ -4,11 +4,13 @@ import com.kademika.shop.DAO.BirdDao;
 import com.kademika.shop.DAO.CustomerDao;
 import com.kademika.shop.DAO.PurchaseDao;
 import com.kademika.shop.constants.Name;
+import com.kademika.shop.entitys.Bird;
 import com.kademika.shop.entitys.Customer;
 import com.kademika.shop.entitys.Purchase;
 import com.kademika.shop.network.ShopServer;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Shop {
@@ -35,7 +37,7 @@ public class Shop {
     public void makePurchase(Purchase purchase) {
 
         String customerName = purchase.getCustomer();
-        Name birdName = purchase.getName();
+        String birdName = purchase.getName();
         int number = purchase.getNumberOfBirds();
         int actualBirdBalance = bd.getBirdBalance(birdName);
         System.out.println("The balance of " + birdName + " in storage is: " + actualBirdBalance);
@@ -43,10 +45,10 @@ public class Shop {
         if (number <= actualBirdBalance) {
             // Check if customer already present in DB
 
-            List<String> customers = cd.getAllCustomers();
+            List<Customer> customers = cd.getAllCustomers();
             int count = 0;
-            for (String cstmr:customers) {
-                if(cstmr.equals(customerName)) {
+            for (Customer cstmr:customers) {
+                if(cstmr.getName().equals(customerName)) {
                     count++;
                 }
             }
@@ -74,12 +76,22 @@ public class Shop {
     }
     //    Get customers
     public List<String> getCustomers() {
-        return cd.getAllCustomers();
+        List<Customer> customers= cd.getAllCustomers();
+        List<String> result = new ArrayList<>(customers.size());
+        for (int i=0; i<customers.size(); i++){
+            result.add(customers.get(i).getName()) ;
+        }
+        return result;
     }
 
     // Catalog with categories. Add Category column in BirdsDB
     public List<String> getCatalog() {
-        return bd.getCatalog();
+        List<Bird> birds = bd.getCatalog();
+        List<String> result = new ArrayList<>(birds.size());
+        for(int i=0; i<birds.size(); i++){
+            result.add(birds.get(i).getName());
+        }
+        return result;
     }
 
 }

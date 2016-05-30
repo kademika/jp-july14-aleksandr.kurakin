@@ -32,14 +32,16 @@ public class CustomerDao {
 
     }
 
-    public List<String> getAllCustomers() {
-        List<String> customers = new ArrayList<>();
+    public List<Customer> getAllCustomers() {
+        List<Customer> customers = new ArrayList<>();
         String getCustomersQuery = "select name from customers";
         try {
             Statement statement = connection.createStatement();
             ResultSet rsGetCustomers = statement.executeQuery(getCustomersQuery);
             while (rsGetCustomers.next()) {
-                customers.add(rsGetCustomers.getString(1));
+                Customer customer = new Customer();
+                customer.setName(rsGetCustomers.getString(1));
+                customers.add(customer);
             }
         } catch (SQLException e) {
             e.printStackTrace();

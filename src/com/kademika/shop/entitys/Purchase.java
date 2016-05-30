@@ -7,12 +7,12 @@ import com.kademika.shop.constants.Name;
 
 public class Purchase implements Serializable{
 	private int numberOfBirds;
-    private Name name;
+    private String name;
 	private String customerName;
 	private Date purchaseTime;
 	List <Bird> prchs = new ArrayList();
 
-	public Purchase(String customerName, Name name, int number) {
+	public Purchase(String customerName, String name, int number) {
 		this.customerName = customerName;
         this.name = name;
 		Random r = new Random();
@@ -41,7 +41,7 @@ public class Purchase implements Serializable{
 		return numberOfBirds;
 	}
 
-    public Name getName() {
+    public String getName() {
         return name;
     }
 }

@@ -1,4 +1,4 @@
-package com.kademika.tanksGame.tanks;
+package com.kademika.tanksGame.movingObjects;
 
 /**
  * Created by kurakinaleksandr on 17.09.14.

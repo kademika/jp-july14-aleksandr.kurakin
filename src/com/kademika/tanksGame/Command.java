@@ -1,7 +1,7 @@
 package com.kademika.tanksGame;
 
-import com.kademika.tanksGame.tanks.Action;
-import com.kademika.tanksGame.tanks.Tank;
+import com.kademika.tanksGame.movingObjects.Action;
+import com.kademika.tanksGame.movingObjects.Tank;
 
 import java.io.Serializable;
 

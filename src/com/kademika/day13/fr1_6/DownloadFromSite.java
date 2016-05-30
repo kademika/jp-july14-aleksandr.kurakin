@@ -12,7 +12,7 @@ public class DownloadFromSite {
         int size = 1024;
         File site = new File("site.html");
 
-        OutputStream outStream = null;
+        OutputStream outStream;
         InputStream is;
 
         try {

@@ -3,8 +3,8 @@ package com.kademika.tanksGame;
 import com.kademika.tanksGame.fieldObjects.*;
 import com.kademika.tanksGame.net.Client;
 import com.kademika.tanksGame.net.Server;
-import com.kademika.tanksGame.tanks.*;
-import com.kademika.tanksGame.tanks.Action;
+import com.kademika.tanksGame.movingObjects.*;
+import com.kademika.tanksGame.movingObjects.Action;
 
 import javax.swing.*;
 import java.awt.*;
@@ -582,4 +582,7 @@ public class ActionField extends JPanel {
 
     }
 
+    public void setUpClientTank(Action start) {
+
+    }
 }

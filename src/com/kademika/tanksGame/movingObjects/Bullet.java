@@ -1,4 +1,4 @@
-package com.kademika.tanksGame.tanks;
+package com.kademika.tanksGame.movingObjects;
 
 import com.kademika.tanksGame.Direction;
 import com.kademika.tanksGame.interfaces.Destroyable;
