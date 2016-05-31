@@ -3,7 +3,6 @@ package com.kademika.shop;
 import com.kademika.shop.DAO.BirdDao;
 import com.kademika.shop.DAO.CustomerDao;
 import com.kademika.shop.DAO.PurchaseDao;
-import com.kademika.shop.constants.Name;
 import com.kademika.shop.entitys.Bird;
 import com.kademika.shop.entitys.Customer;
 import com.kademika.shop.entitys.Purchase;
@@ -84,7 +83,7 @@ public class Shop {
         return result;
     }
 
-    // Catalog with categories. Add Category column in BirdsDB
+    // Birds catalog
     public List<String> getCatalog() {
         List<Bird> birds = bd.getCatalog();
         List<String> result = new ArrayList<>(birds.size());
